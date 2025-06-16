@@ -1,13 +1,15 @@
 package ar.edu.utn.dds.k3003.repository;
 
 import ar.edu.utn.dds.k3003.model.Fuente;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Repository("repoCrudList")
+@Repository
+@Profile("test")
 public class InMemoryFuenteRepo implements FuenteRepository {
 
   private final List<Fuente> fuentes;

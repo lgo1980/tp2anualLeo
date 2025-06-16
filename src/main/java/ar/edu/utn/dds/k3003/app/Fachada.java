@@ -15,6 +15,7 @@ import ar.edu.utn.dds.k3003.model.Fuente;
 import ar.edu.utn.dds.k3003.repository.FuenteRepository;
 import ar.edu.utn.dds.k3003.repository.InMemoryagregadorRepo;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -25,13 +26,20 @@ import java.util.stream.Collectors;
 @Service
 public class Fachada implements FachadaAgregador {
 
-  /* @Autowired
-   @Qualifier("repoCrudSpring")*/
-  private final FuenteRepository fuenteRepository = new InMemoryFuenteRepo();
+  private FuenteRepository fuenteRepository;
   private final Agregador agregador;
-  private final AgregadorRepository agregadorRepository = new InMemoryagregadorRepo();
+  private final AgregadorRepository agregadorRepository;
 
   public Fachada() {
+    agregadorRepository = new InMemoryagregadorRepo();
+    Optional<Agregador> agregador1 = agregadorRepository.findById("1");
+    agregador = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador()));
+  }
+
+  @Autowired
+  public Fachada(FuenteRepository fuenteRepository, AgregadorRepository agregadorRepository) {
+    this.fuenteRepository = fuenteRepository;
+    this.agregadorRepository = agregadorRepository;
     Optional<Agregador> agregador1 = agregadorRepository.findById("1");
     agregador = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador()));
   }

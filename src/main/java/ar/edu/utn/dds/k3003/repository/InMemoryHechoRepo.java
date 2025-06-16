@@ -1,11 +1,15 @@
 package ar.edu.utn.dds.k3003.repository;
 
 import ar.edu.utn.dds.k3003.model.Hecho;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
+@Profile("test")
 public class InMemoryHechoRepo implements HechoRepository {
 
   private final List<Hecho> hechos;

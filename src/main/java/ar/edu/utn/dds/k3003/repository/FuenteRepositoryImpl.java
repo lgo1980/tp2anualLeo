@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository("repoCrudSpring")
-@Profile("!test")
+@Repository
+@Profile("dev")
 public interface FuenteRepositoryImpl extends CrudRepository<Fuente, String>, FuenteRepository {
 }

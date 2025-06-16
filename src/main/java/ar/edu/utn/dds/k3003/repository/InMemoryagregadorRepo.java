@@ -1,10 +1,14 @@
 package ar.edu.utn.dds.k3003.repository;
 
 import ar.edu.utn.dds.k3003.model.Agregador;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
+@Profile("test")
 public class InMemoryagregadorRepo implements AgregadorRepository {
 
   private final List<Agregador> agregadores;
