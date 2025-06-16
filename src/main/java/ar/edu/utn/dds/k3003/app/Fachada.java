@@ -5,17 +5,21 @@ import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.ConsensosEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
-import ar.edu.utn.dds.k3003.repository.ColeccionRepository;
-import ar.edu.utn.dds.k3003.repository.InMemoryColeccionRepo;
+import ar.edu.utn.dds.k3003.model.Consenso;
+import ar.edu.utn.dds.k3003.model.ConsensoMultiples;
+import ar.edu.utn.dds.k3003.model.ConsensoTodos;
+import ar.edu.utn.dds.k3003.repository.AgregadorRepository;
 import ar.edu.utn.dds.k3003.repository.InMemoryFuenteRepo;
-import ar.edu.utn.dds.k3003.service.Agregador;
+import ar.edu.utn.dds.k3003.model.Agregador;
 import ar.edu.utn.dds.k3003.model.Fuente;
 import ar.edu.utn.dds.k3003.repository.FuenteRepository;
+import ar.edu.utn.dds.k3003.repository.InMemoryagregadorRepo;
 import lombok.val;
 import org.springframework.stereotype.Service;
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,11 +28,12 @@ public class Fachada implements FachadaAgregador {
   /* @Autowired
    @Qualifier("repoCrudSpring")*/
   private final FuenteRepository fuenteRepository = new InMemoryFuenteRepo();
-  private final Agregador agregador = new Agregador();
-  private final ColeccionRepository coleccionRepository = new InMemoryColeccionRepo();
+  private final Agregador agregador;
+  private final AgregadorRepository agregadorRepository = new InMemoryagregadorRepo();
 
   public Fachada() {
-
+    Optional<Agregador> agregador1 = agregadorRepository.findById("1");
+    agregador = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador()));
   }
 
   @Override
@@ -67,8 +72,13 @@ public class Fachada implements FachadaAgregador {
   }
 
   @Override
-  public void setConsensoStrategy(ConsensosEnum tipoConsenso, String coleccionId) throws InvalidParameterException {
-    agregador.agregarConsenso(tipoConsenso);
+  public void setConsensoStrategy(ConsensosEnum tipoConsenso, String coleccionId)
+      throws InvalidParameterException {
+    if (tipoConsenso == null || coleccionId == null)
+      throw new InvalidParameterException();
+    Consenso nuevoConsenso = (tipoConsenso == ConsensosEnum.TODOS)
+        ? new ConsensoTodos() : new ConsensoMultiples();
+    agregador.setConsenso(nuevoConsenso);
   }
 
 }
