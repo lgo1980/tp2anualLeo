@@ -26,20 +26,22 @@ import java.util.stream.Collectors;
 @Service
 public class Fachada implements FachadaAgregador {
 
-  private FuenteRepository fuenteRepository;
+  private final FuenteRepository fuenteRepository;
   private final Agregador agregador;
   private final AgregadorRepository agregadorRepository;
-
-  public Fachada() {
-    agregadorRepository = new InMemoryagregadorRepo();
-    Optional<Agregador> agregador1 = agregadorRepository.findById("1");
-    agregador = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador()));
-  }
 
   @Autowired
   public Fachada(FuenteRepository fuenteRepository, AgregadorRepository agregadorRepository) {
     this.fuenteRepository = fuenteRepository;
     this.agregadorRepository = agregadorRepository;
+
+    Optional<Agregador> agregador1 = agregadorRepository.findById("1");
+    this.agregador = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador("1")));
+  }
+
+  public Fachada() {
+    this.fuenteRepository = new InMemoryFuenteRepo();
+    this.agregadorRepository = new InMemoryagregadorRepo();
     Optional<Agregador> agregador1 = agregadorRepository.findById("1");
     agregador = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador()));
   }

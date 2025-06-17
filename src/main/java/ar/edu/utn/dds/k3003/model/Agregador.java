@@ -36,6 +36,13 @@ public class Agregador {
   @JoinColumn(name = "consenso_id")
   private Consenso consenso;
 
+  public Agregador() {
+  }
+
+  public Agregador(String id) {
+    this.id = id;
+  }
+
   public void agregarFuente(Fuente fuente) {
     fuentes.add(fuente);
   }
@@ -46,10 +53,10 @@ public class Agregador {
         .flatMap(fuente -> fuente.getFachadaFuente().buscarHechosXColeccion(coleccionId).stream())
         .filter(hecho -> titulosVistos.add(hecho.titulo().toLowerCase())) // solo se agregan títulos nuevos
         .collect(Collectors.toSet());
-    return validarHechos(hechosUnicos, coleccionId);
+    return validarHechos(hechosUnicos);
   }
 
-  private List<HechoDTO> validarHechos(Set<HechoDTO> hechos, String coleccionId) {
+  private List<HechoDTO> validarHechos(Set<HechoDTO> hechos) {
     return hechos.stream().filter(hechoDTO -> consenso.aplicar(hechoDTO, fuentes)).toList();
   }
 
