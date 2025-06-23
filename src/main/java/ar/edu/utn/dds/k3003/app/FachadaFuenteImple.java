@@ -131,9 +131,6 @@ public class FachadaFuenteImple implements FachadaFuente {
   @Override
   public List<ColeccionDTO> colecciones() {
     List<Coleccion> colecciones = coleccionRepository.findAll();
-    if (colecciones.isEmpty()) {
-      throw new NoSuchElementException("No hay colecciones existentes");
-    }
     return colecciones.stream()
         .map(coleccion -> new ColeccionDTO(coleccion.getNombre(), coleccion.getDescripcion()))
         .collect(Collectors.toList());

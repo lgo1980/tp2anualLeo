@@ -1,4 +1,4 @@
-package ar.edi.itn.dds.k3003.app;
+package ar.edu.utn.dds.k3003.app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

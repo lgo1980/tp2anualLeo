@@ -12,6 +12,7 @@ import java.util.List;
 @RequestMapping("/colecciones")
 public class ColeccionController {
 
+  @Autowired
   private final FachadaFuente fachadaFuente;
 
   @Autowired

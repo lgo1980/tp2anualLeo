@@ -42,7 +42,7 @@ public class FuenteController {
   }
 
   @GetMapping("/coleccion/{nombre}/hechos")
-  public ResponseEntity<List<HechoDTO>> obtenerColeccion(@PathVariable String nombre) {
+  public ResponseEntity<List<HechoDTO>> obtenerHechos(@PathVariable String nombre) {
     return ResponseEntity.ok(fachadaAgregador.hechos(nombre));
   }
 
@@ -52,6 +52,5 @@ public class FuenteController {
     fachadaAgregador.setConsensoStrategy(consensosEnum, "coleccionId");
     return ResponseEntity.noContent().build();
   }
-
 
 } 
