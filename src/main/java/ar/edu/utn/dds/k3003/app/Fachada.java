@@ -14,6 +14,7 @@ import ar.edu.utn.dds.k3003.model.Agregador;
 import ar.edu.utn.dds.k3003.model.Fuente;
 import ar.edu.utn.dds.k3003.repository.FuenteRepository;
 import ar.edu.utn.dds.k3003.repository.InMemoryagregadorRepo;
+import lombok.Getter;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 public class Fachada implements FachadaAgregador {
 
   private final FuenteRepository fuenteRepository;
+  @Getter
   private final Agregador agregador;
   private final AgregadorRepository agregadorRepository;
 
