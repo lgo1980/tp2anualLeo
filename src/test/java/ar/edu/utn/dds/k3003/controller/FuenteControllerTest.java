@@ -149,13 +149,13 @@ public class FuenteControllerTest {
         .andExpect(jsonPath("$[0].titulo").value("c"))
         .andExpect(jsonPath("$[1].titulo").value("b"))
         .andExpect(jsonPath("$[2].titulo").value("a"));
-    /*generarDevolucionDeHechosFuente2();
+    generarDevolucionDeHechosFuente2();
     mockMvc.perform(get("/fuentes/coleccion/1/hechos"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.length()").value(3))
         .andExpect(jsonPath("$[0].titulo").value("c"))
         .andExpect(jsonPath("$[1].titulo").value("b"))
-        .andExpect(jsonPath("$[2].titulo").value("a"));*/
+        .andExpect(jsonPath("$[2].titulo").value("a"));
   }
 
   private void inicializarSoloFuentes(ConsensosEnum consenso) {
