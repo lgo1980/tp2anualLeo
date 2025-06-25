@@ -16,6 +16,7 @@ import ar.edu.utn.dds.k3003.repository.InMemoryPdiRepo;
 import ar.edu.utn.dds.k3003.repository.PdiRepository;
 import lombok.Getter;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -36,6 +37,18 @@ public class FachadaFuenteImple implements FachadaFuente {
     this.hechoRepository = new InMemoryHechoRepo();
     this.pdiRepository = new InMemoryPdiRepo();
     this.fachadaProcesadorPDI = new FachadaProcesadorPDIImplentado();
+  }
+
+  @Autowired
+  public FachadaFuenteImple(
+      ColeccionRepository coleccionRepository,
+      HechoRepository hechoRepository,
+      PdiRepository pdiRepository,
+      FachadaProcesadorPdI fachadaProcesadorPDI) {
+    this.coleccionRepository = coleccionRepository;
+    this.hechoRepository = hechoRepository;
+    this.pdiRepository = pdiRepository;
+    this.fachadaProcesadorPDI = fachadaProcesadorPDI;
   }
 
   @Override
@@ -87,7 +100,7 @@ public class FachadaFuenteImple implements FachadaFuente {
 
   @Override
   public List<HechoDTO> buscarHechosXColeccion(String coleccionId) throws NoSuchElementException {
-    List<Hecho> hechos = this.hechoRepository.findByColeccion(coleccionId);
+    List<Hecho> hechos = this.hechoRepository.findByNombreColeccion(coleccionId);
     if (hechos.isEmpty()) {
       throw new NoSuchElementException(coleccionId + " no existe");
     }

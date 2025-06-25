@@ -13,12 +13,12 @@ import java.util.List;
 public class ColeccionController {
 
   @Autowired
-  private final FachadaFuente fachadaFuente;
-
+  private FachadaFuente fachadaFuente;
+/*
   @Autowired
   public ColeccionController(FachadaFuente fachadaFuente) {
     this.fachadaFuente = fachadaFuente;
-  }
+  }*/
 
   @GetMapping
   public ResponseEntity<List<ColeccionDTO>> listarColecciones() {

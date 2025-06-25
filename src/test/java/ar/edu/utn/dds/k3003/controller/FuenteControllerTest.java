@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import ar.edu.utn.dds.k3003.app.Fachada;
 import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.ConsensosEnum;
@@ -33,6 +34,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -133,7 +135,7 @@ public class FuenteControllerTest {
     mockMvc.perform(get("/fuentes/coleccion/1/hechos"))
         .andExpect(status().isOk())
         .andExpect(content().json("[]"));
-    inicializarSoloFuentes(ConsensosEnum.TODOS);
+    inicializarLas2Fuentes();
     mockMvc.perform(get("/fuentes/coleccion/1/hechos"))
         .andExpect(status().isOk())
         .andExpect(content().json("[]"));
@@ -141,7 +143,7 @@ public class FuenteControllerTest {
 
   @Test
   public void obtenerHechos_consenso_todos() throws Exception {
-    inicializarSoloFuentes(ConsensosEnum.TODOS);
+    inicializarLas2Fuentes();
     generarDevolucionDeHechosFuente1();
     mockMvc.perform(get("/fuentes/coleccion/1/hechos"))
         .andExpect(status().isOk())
@@ -158,12 +160,37 @@ public class FuenteControllerTest {
         .andExpect(jsonPath("$[2].titulo").value("a"));
   }
 
-  private void inicializarSoloFuentes(ConsensosEnum consenso) {
+  @Test
+  public void obtenerHechos_consenso_multiples() throws Exception {
+    inicializarFuente(fuente1);
+    generarDevolucionDeHechosFuente1();
+    mockMvc.perform(get("/fuentes/coleccion/1/hechos"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(3))
+        .andExpect(jsonPath("$[0].titulo").value("c"))
+        .andExpect(jsonPath("$[1].titulo").value("b"))
+        .andExpect(jsonPath("$[2].titulo").value("a"));
+    inicializarFuente(fuente2);
+    generarDevolucionDeHechosFuente2();
+    mockMvc.perform(get("/fuentes/coleccion/1/hechos"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(2))
+        .andExpect(jsonPath("$[0].titulo").value("b"))
+        .andExpect(jsonPath("$[1].titulo").value("a"));
+  }
+
+  private void inicializarLas2Fuentes() {
     val fuenteDTO1 = fachada.agregar(new FuenteDTO("", NOMBRE_FUENTE, "123"));
     fachada.addFachadaFuentes(fuenteDTO1.id(), fuente1);
     val fuenteDTO2 = fachada.agregar(new FuenteDTO("", NOMBRE_FUENTE, "123"));
     fachada.addFachadaFuentes(fuenteDTO2.id(), fuente2);
-    fachada.setConsensoStrategy(consenso, "1");
+    fachada.setConsensoStrategy(ConsensosEnum.TODOS, "1");
+  }
+
+  private void inicializarFuente(FachadaFuente fuente) {
+    val fuenteDTO1 = fachada.agregar(new FuenteDTO("", NOMBRE_FUENTE, "123"));
+    fachada.addFachadaFuentes(fuenteDTO1.id(), fuente);
+    fachada.setConsensoStrategy(ConsensosEnum.AL_MENOS_2, "1");
   }
 
   private void generarDevolucionDeHechosFuente1() {
@@ -181,19 +208,4 @@ public class FuenteControllerTest {
     ));
   }
 
-  /*
-  private void inicializarSoloFuentes(ConsensosEnum consenso) {
-    val fuenteDTO1 = fachada.agregar(new FuenteDTO("", NOMBRE_FUENTE, "123"));
-    fachada.addFachadaFuentes(fuenteDTO1.id(), fuente1);
-    val fuenteDTO2 = fachada.agregar(new FuenteDTO("", NOMBRE_FUENTE, "123"));
-    fachada.addFachadaFuentes(fuenteDTO2.id(), fuente2);
-    fachada.setConsensoStrategy(consenso, "1");
-    when(fuente1.buscarHechosXColeccion("1")).thenReturn(List.of(
-        new HechoDTO("1", "1", "a"), new HechoDTO("2", "1", "b"), new HechoDTO("3", "1", "c")
-    ));
-    when(fuente2.buscarHechosXColeccion("1")).thenReturn(List.of(
-        new HechoDTO("4", "1", "a"), new HechoDTO("5", "1", "b")
-    ));
-  }
-   */
 }

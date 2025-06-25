@@ -5,7 +5,9 @@ import ar.edu.utn.dds.k3003.facades.FachadaSolicitudes;
 import ar.edu.utn.dds.k3003.facades.dtos.PdIDTO;
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class FachadaProcesadorPDIImplentado implements FachadaProcesadorPdI {
 
   @Override

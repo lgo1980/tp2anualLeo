@@ -10,6 +10,6 @@ public interface HechoRepository {
 
   Hecho save(Hecho col);
 
-  List<Hecho> findByColeccion(String coleccion);
+  List<Hecho> findByNombreColeccion(String coleccion);
 
 }

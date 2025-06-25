@@ -11,6 +11,9 @@ import lombok.Data;
 @Data
 public class Coleccion {
 
+  public Coleccion() {
+  }
+
   public Coleccion(String nombre, String descripcion) {
     this.nombre = nombre;
     this.descripcion = descripcion;
