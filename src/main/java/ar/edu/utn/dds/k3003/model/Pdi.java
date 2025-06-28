@@ -21,6 +21,9 @@ public class Pdi {
   private String contenido;
   private List<String> etiquetas;
 
+  public Pdi() {
+  }
+
   public Pdi(String id, String hechoId, String descripcion, String lugar,
              LocalDateTime momento, String contenido, List<String> etiquetas) {
     this.id = id;

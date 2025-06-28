@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -91,6 +92,7 @@ public class Fachada implements FachadaAgregador {
     Consenso nuevoConsenso = (tipoConsenso == ConsensosEnum.TODOS)
         ? new ConsensoTodos() : new ConsensoMultiples();
     agregador.setConsenso(nuevoConsenso);
+    agregadorRepository.save(agregador);
   }
 
 }

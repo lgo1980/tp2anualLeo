@@ -3,6 +3,7 @@ package ar.edu.utn.dds.k3003.model;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -24,13 +25,13 @@ public class Agregador {
   @Id
   private String id;
 
-  @ManyToMany
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "agregador_fuente",
       joinColumns = @JoinColumn(name = "agregador_id"),
       inverseJoinColumns = @JoinColumn(name = "fuente_id")
   )
-  private final List<Fuente> fuentes = new ArrayList<>();
+  private List<Fuente> fuentes = new ArrayList<>();
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "consenso_id")

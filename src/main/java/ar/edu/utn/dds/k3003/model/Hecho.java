@@ -25,6 +25,9 @@ public class Hecho {
   private String origen;
   private List<String> etiquetas;
 
+  public Hecho() {
+  }
+
   public Hecho(String id, String titulo, String nombreColeccion, CategoriaHechoEnum categoria,
                String ubicacion, LocalDateTime fecha, String origen, List<String> etiquetas) {
     this.id = id;

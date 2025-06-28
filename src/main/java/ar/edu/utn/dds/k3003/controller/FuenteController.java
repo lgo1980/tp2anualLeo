@@ -1,6 +1,7 @@
 package ar.edu.utn.dds.k3003.controller;
 
 import ar.edu.utn.dds.k3003.facades.FachadaAgregador;
+import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.ConsensosEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
@@ -24,6 +25,9 @@ public class FuenteController {
   @Autowired
   private FachadaAgregador fachadaAgregador;
 
+  @Autowired
+  private FachadaFuente fuente1;
+
   @GetMapping
   public ResponseEntity<List<FuenteDTO>> listarFuentes() {
     return ResponseEntity.ok(fachadaAgregador.fuentes());
@@ -43,13 +47,14 @@ public class FuenteController {
 
   @GetMapping("/coleccion/{nombre}/hechos")
   public ResponseEntity<List<HechoDTO>> obtenerHechos(@PathVariable String nombre) {
+    fachadaAgregador.addFachadaFuentes("1", fuente1);
     return ResponseEntity.ok(fachadaAgregador.hechos(nombre));
   }
 
   @PatchMapping("/consenso")
   public ResponseEntity<?> modificarConsenso(
       @RequestBody ConsensosEnum consensosEnum) {
-    fachadaAgregador.setConsensoStrategy(consensosEnum, "coleccionId");
+    fachadaAgregador.setConsensoStrategy(consensosEnum, "Coleccion1");
     return ResponseEntity.noContent().build();
   }
 
