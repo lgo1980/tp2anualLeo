@@ -47,7 +47,7 @@ public class FuenteController {
 
   @GetMapping("/coleccion/{nombre}/hechos")
   public ResponseEntity<List<HechoDTO>> obtenerHechos(@PathVariable String nombre) {
-    fachadaAgregador.addFachadaFuentes("1", fuente1);
+//    fachadaAgregador.addFachadaFuentes("1", fuente1);
     return ResponseEntity.ok(fachadaAgregador.hechos(nombre));
   }
 

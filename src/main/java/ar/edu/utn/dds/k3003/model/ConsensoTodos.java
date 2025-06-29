@@ -10,7 +10,7 @@ import java.util.List;
 public class ConsensoTodos extends Consenso {
 
   @Override
-  public Boolean aplicar(HechoDTO hecho, List<Fuente> fuentes) {
+  public Boolean aplicar(HechoDTO hecho, List<FuenteFachada> fuentes) {
     return true;
   }
 }

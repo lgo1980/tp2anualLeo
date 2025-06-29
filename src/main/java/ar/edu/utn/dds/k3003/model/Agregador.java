@@ -1,5 +1,6 @@
 package ar.edu.utn.dds.k3003.model;
 
+import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -25,17 +26,17 @@ public class Agregador {
   @Id
   private String id;
 
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(
-      name = "agregador_fuente",
-      joinColumns = @JoinColumn(name = "agregador_id"),
-      inverseJoinColumns = @JoinColumn(name = "fuente_id")
-  )
-  private List<Fuente> fuentes = new ArrayList<>();
-
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "consenso_id")
   private Consenso consenso;
+
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "agregador_fachada_fuente",
+      joinColumns = @JoinColumn(name = "agregador_id"),
+      inverseJoinColumns = @JoinColumn(name = "fuente_id")
+  )
+  private List<FuenteFachada> fuentes = new ArrayList<>();
 
   public Agregador() {
   }
@@ -44,14 +45,14 @@ public class Agregador {
     this.id = id;
   }
 
-  public void agregarFuente(Fuente fuente) {
-    fuentes.add(fuente);
+  public void agregarFuente(String fuenteId, FachadaFuente fuente) {
+    fuentes.add(new FuenteFachada(fuenteId, fuente));
   }
 
   public List<HechoDTO> consultarHechosPor(String coleccionId) {
     Set<String> titulosVistos = new HashSet<>();
     Set<HechoDTO> hechosUnicos = fuentes.stream()
-        .flatMap(fuente -> fuente.getFachadaFuente().buscarHechosXColeccion(coleccionId).stream())
+        .flatMap(fuente -> fuente.getFuente().buscarHechosXColeccion(coleccionId).stream())
         .filter(hecho -> titulosVistos.add(hecho.titulo().toLowerCase())) // solo se agregan títulos nuevos
         .collect(Collectors.toSet());
     return validarHechos(hechosUnicos);
