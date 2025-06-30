@@ -1,7 +1,9 @@
 package ar.edu.utn.dds.k3003.controller;
 
+import ar.edu.utn.dds.k3003.facades.FachadaAgregador;
 import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.ColeccionDTO;
+import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +16,9 @@ public class ColeccionController {
 
   @Autowired
   private FachadaFuente fachadaFuente;
-/*
+
   @Autowired
-  public ColeccionController(FachadaFuente fachadaFuente) {
-    this.fachadaFuente = fachadaFuente;
-  }*/
+  private FachadaAgregador fachadaAgregador;
 
   @GetMapping
   public ResponseEntity<List<ColeccionDTO>> listarColecciones() {
@@ -33,5 +33,10 @@ public class ColeccionController {
   @PostMapping
   public ResponseEntity<ColeccionDTO> crearColeccion(@RequestBody ColeccionDTO coleccion) {
     return ResponseEntity.ok(fachadaFuente.agregar(coleccion));
+  }
+
+  @GetMapping("/{nombre}/hechos")
+  public ResponseEntity<List<HechoDTO>> obtenerHechos(@PathVariable String nombre) {
+    return ResponseEntity.ok(fachadaAgregador.hechos(nombre));
   }
 } 
