@@ -2,14 +2,16 @@ package ar.edu.utn.dds.k3003.controller;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ar.edu.utn.dds.k3003.app.Fachada;
+import ar.edu.utn.dds.k3003.dto.CambioConsensoDTO;
+import ar.edu.utn.dds.k3003.facades.dtos.ConsensosEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
 import ar.edu.utn.dds.k3003.model.Agregador;
+import ar.edu.utn.dds.k3003.model.Consenso;
 import ar.edu.utn.dds.k3003.model.ConsensoMultiples;
 import ar.edu.utn.dds.k3003.model.ConsensoTodos;
 import ar.edu.utn.dds.k3003.repository.InMemoryFuenteRepo;
@@ -90,28 +92,27 @@ public class FuenteControllerTest {
   @Test
   public void modificarConsenso() throws Exception {
 
-    Field consensusField = Agregador.class.getDeclaredField("consenso");
-    consensusField.setAccessible(true);
-    assertNull(consensusField.get(fachada.getAgregador()));
-
+    CambioConsensoDTO cambio = new CambioConsensoDTO("1", ConsensosEnum.TODOS);
 
     mockMvc.perform(patch("/fuentes/consenso")
             .contentType(MediaType.APPLICATION_JSON)
-            .content("\"TODOS\""))
+            .content(objectMapper.writeValueAsString(cambio)))
         .andExpect(status().isNoContent());
 
-    Object consensoActual = consensusField.get(fachada.getAgregador());
-    assertNotNull(consensoActual);
-    assertInstanceOf(ConsensoTodos.class, consensoActual);
+    Consenso consenso = fachada.getAgregador().getConsensos().get("1");
+    assertNotNull(consenso);
+    assertInstanceOf(ConsensoTodos.class, consenso);
+
+    cambio = new CambioConsensoDTO("1", ConsensosEnum.AL_MENOS_2);
 
     mockMvc.perform(patch("/fuentes/consenso")
             .contentType(MediaType.APPLICATION_JSON)
-            .content("\"AL_MENOS_2\""))
+            .content(objectMapper.writeValueAsString(cambio)))
         .andExpect(status().isNoContent());
 
-    consensoActual = consensusField.get(fachada.getAgregador());
-    assertNotNull(consensoActual);
-    assertInstanceOf(ConsensoMultiples.class, consensoActual);
+    consenso = fachada.getAgregador().getConsensos().get("1");
+    assertNotNull(consenso);
+    assertInstanceOf(ConsensoMultiples.class, consenso);
 
   }
 }

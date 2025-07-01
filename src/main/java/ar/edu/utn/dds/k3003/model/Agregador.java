@@ -1,6 +1,5 @@
 package ar.edu.utn.dds.k3003.model;
 
-import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -30,15 +29,12 @@ public class Agregador {
 
   @ManyToMany
   @JoinTable(
-      name = "agregador_fuente",
+      name = "agregador_fuente_fachada",
       joinColumns = @JoinColumn(name = "agregador_id"),
-      inverseJoinColumns = @JoinColumn(name = "fuente_id")
+      inverseJoinColumns = @JoinColumn(name = "fuente_fachada_id")
   )
   private final List<FuenteFachada> fuentes = new ArrayList<>();
 
-  /*@OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "consenso_id")
-  private Consenso consenso;*/
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @MapKeyColumn(name = "clave")
   private Map<String, Consenso> consensos = new HashMap<>();

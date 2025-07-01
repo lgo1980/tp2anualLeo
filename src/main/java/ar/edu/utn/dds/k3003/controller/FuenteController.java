@@ -1,8 +1,8 @@
 package ar.edu.utn.dds.k3003.controller;
 
+import ar.edu.utn.dds.k3003.dto.CambioConsensoDTO;
 import ar.edu.utn.dds.k3003.facades.FachadaAgregador;
 import ar.edu.utn.dds.k3003.facades.FachadaFuente;
-import ar.edu.utn.dds.k3003.facades.dtos.ConsensosEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +45,8 @@ public class FuenteController {
 
   @PatchMapping("/consenso")
   public ResponseEntity<?> modificarConsenso(
-      @RequestBody ConsensosEnum consensosEnum) {
-    fachadaAgregador.setConsensoStrategy(consensosEnum, "Coleccion1");
+      @RequestBody CambioConsensoDTO cambioConsensoDTO) {
+    fachadaAgregador.setConsensoStrategy(cambioConsensoDTO.tipo(), cambioConsensoDTO.coleccionId());
     return ResponseEntity.noContent().build();
   }
 
