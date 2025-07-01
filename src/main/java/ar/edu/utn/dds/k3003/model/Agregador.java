@@ -7,8 +7,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.MapKeyColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Data;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,9 +35,12 @@ public class Agregador {
   )
   private final List<Fuente> fuentes = new ArrayList<>();
 
-  @OneToOne(cascade = CascadeType.ALL)
+  /*@OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "consenso_id")
-  private Consenso consenso;
+  private Consenso consenso;*/
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @MapKeyColumn(name = "clave")
+  private Map<String, Consenso> consensos = new HashMap<>();
 
   public Agregador() {
   }
@@ -53,11 +59,16 @@ public class Agregador {
         .flatMap(fuente -> fuente.getFachadaFuente().buscarHechosXColeccion(coleccionId).stream())
         .filter(hecho -> titulosVistos.add(hecho.titulo().toLowerCase())) // solo se agregan títulos nuevos
         .collect(Collectors.toSet());
-    return validarHechos(hechosUnicos);
+    return validarHechos(hechosUnicos, coleccionId);
   }
 
-  private List<HechoDTO> validarHechos(Set<HechoDTO> hechos) {
+  private List<HechoDTO> validarHechos(Set<HechoDTO> hechos, String coleccionId) {
+    Consenso consenso = consensos.get(coleccionId);
     return hechos.stream().filter(hechoDTO -> consenso.aplicar(hechoDTO, fuentes)).toList();
+  }
+
+  public void agregarConsenso(String coleccionId, Consenso consenso) {
+    consensos.put(coleccionId, consenso);
   }
 
 }

@@ -81,6 +81,7 @@ public class Fachada implements FachadaAgregador {
   @Override
   public void addFachadaFuentes(String fuenteId, FachadaFuente fuente) {
     agregador.agregarFuente(new Fuente(fuenteId, fuente));
+    agregadorRepository.save(agregador);
   }
 
   @Override
@@ -90,7 +91,8 @@ public class Fachada implements FachadaAgregador {
       throw new InvalidParameterException();
     Consenso nuevoConsenso = (tipoConsenso == ConsensosEnum.TODOS)
         ? new ConsensoTodos() : new ConsensoMultiples();
-    agregador.setConsenso(nuevoConsenso);
+    agregador.agregarConsenso(coleccionId, nuevoConsenso);
+    agregadorRepository.save(agregador);
   }
 
 }
