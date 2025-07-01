@@ -10,14 +10,14 @@ import java.util.List;
 public class ConsensoMultiples extends Consenso {
 
   @Override
-  public Boolean aplicar(HechoDTO hecho, List<Fuente> fuentes) {
+  public Boolean aplicar(HechoDTO hecho, List<FuenteFachada> fuentes) {
     if (fuentes.size() == 1) {
       return true;
     }
 
     int contador = 0;
-    for (Fuente fuente : fuentes) {
-      List<HechoDTO> hechos = fuente.getFachadaFuente().buscarHechosXColeccion(hecho.nombreColeccion());
+    for (FuenteFachada fuente : fuentes) {
+      List<HechoDTO> hechos = fuente.getFuente().buscarHechosXColeccion(hecho.nombreColeccion());
 
       boolean estaPresente = hechos.stream()
           .anyMatch(h -> h.titulo().equalsIgnoreCase(hecho.titulo()));
