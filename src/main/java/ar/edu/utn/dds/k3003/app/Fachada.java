@@ -8,6 +8,7 @@ import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import ar.edu.utn.dds.k3003.model.Consenso;
 import ar.edu.utn.dds.k3003.model.ConsensoMultiples;
 import ar.edu.utn.dds.k3003.model.ConsensoTodos;
+import ar.edu.utn.dds.k3003.model.FuenteFachada;
 import ar.edu.utn.dds.k3003.repository.AgregadorRepository;
 import ar.edu.utn.dds.k3003.repository.InMemoryFuenteRepo;
 import ar.edu.utn.dds.k3003.model.Agregador;
@@ -80,7 +81,7 @@ public class Fachada implements FachadaAgregador {
 
   @Override
   public void addFachadaFuentes(String fuenteId, FachadaFuente fuente) {
-    agregador.agregarFuente(new Fuente(fuenteId, fuente));
+    agregador.agregarFuente(new FuenteFachada(fuenteId, fuente));
     agregadorRepository.save(agregador);
   }
 
