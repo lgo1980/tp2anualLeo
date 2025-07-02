@@ -2,16 +2,19 @@ package ar.edu.utn.dds.k3003.model;
 
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.HashMap;
 import java.util.Map;
+import jakarta.persistence.Transient;
 import lombok.Data;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,15 +30,15 @@ public class Agregador {
   @Id
   private String id;
 
-  @ManyToMany
-  @JoinTable(
-      name = "agregador_fuente_fachada",
-      joinColumns = @JoinColumn(name = "agregador_id"),
-      inverseJoinColumns = @JoinColumn(name = "fuente_fachada_id")
-  )
-  private final List<FuenteFachada> fuentes = new ArrayList<>();
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(name = "agregador_fuentes", joinColumns = @JoinColumn(name = "agregador_id"))
+  @Column(name = "fuente_id")
+  private List<String> fuenteIds = new ArrayList<>();
 
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @Transient
+  private List<FuenteFachada> fuentes = new ArrayList<>();
+
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   @MapKeyColumn(name = "clave")
   private Map<String, Consenso> consensos = new HashMap<>();
 

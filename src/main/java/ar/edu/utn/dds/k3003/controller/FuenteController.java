@@ -50,4 +50,11 @@ public class FuenteController {
     return ResponseEntity.noContent().build();
   }
 
+  @PostMapping("/fuente_fahada")
+  public ResponseEntity<?> agregarFuenteFachada(
+      @RequestBody String id) {
+    fachadaAgregador.addFachadaFuentes(id, fuente1);
+    return ResponseEntity.noContent().build();
+  }
+
 } 

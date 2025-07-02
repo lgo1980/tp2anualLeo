@@ -15,11 +15,13 @@ import ar.edu.utn.dds.k3003.model.Agregador;
 import ar.edu.utn.dds.k3003.model.Fuente;
 import ar.edu.utn.dds.k3003.repository.FuenteRepository;
 import ar.edu.utn.dds.k3003.repository.InMemoryagregadorRepo;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -30,16 +32,32 @@ public class Fachada implements FachadaAgregador {
 
   private final FuenteRepository fuenteRepository;
   @Getter
-  private final Agregador agregador;
+  private Agregador agregador;
   private final AgregadorRepository agregadorRepository;
+  @Autowired
+  private FachadaFuente fachadaFuente;
 
   @Autowired
   public Fachada(FuenteRepository fuenteRepository, AgregadorRepository agregadorRepository) {
     this.fuenteRepository = fuenteRepository;
     this.agregadorRepository = agregadorRepository;
 
-    Optional<Agregador> agregador1 = agregadorRepository.findById("1");
-    this.agregador = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador("1")));
+//    Optional<Agregador> agregador1 = agregadorRepository.findById("1");
+//    this.agregador = obtenerAgregadorConFuentes("1");
+
+  }
+
+  public Agregador obtenerAgregadorConFuentes(String id) {
+    Optional<Agregador> agregador1 = agregadorRepository.findById(id);
+    Agregador a = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador(id)));
+
+    // reconstruye las FuenteFachada en memoria
+    List<FuenteFachada> fuentes = new ArrayList<>(a.getFuenteIds().stream()
+        .map(fid -> new FuenteFachada(fid, fachadaFuente))
+        .toList());
+
+    a.setFuentes(fuentes);
+    return a;
   }
 
   public Fachada() {
@@ -47,6 +65,11 @@ public class Fachada implements FachadaAgregador {
     this.agregadorRepository = new InMemoryagregadorRepo();
     Optional<Agregador> agregador1 = agregadorRepository.findById("1");
     agregador = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador()));
+  }
+
+  @PostConstruct
+  public void init() {
+    this.agregador = obtenerAgregadorConFuentes("1");
   }
 
   @Override
@@ -81,6 +104,7 @@ public class Fachada implements FachadaAgregador {
 
   @Override
   public void addFachadaFuentes(String fuenteId, FachadaFuente fuente) {
+    agregador.getFuenteIds().add(fuenteId);
     agregador.agregarFuente(new FuenteFachada(fuenteId, fuente));
     agregadorRepository.save(agregador);
   }
