@@ -15,17 +15,22 @@ import ar.edu.utn.dds.k3003.repository.InMemoryHechoRepo;
 import ar.edu.utn.dds.k3003.repository.InMemoryPdiRepo;
 import ar.edu.utn.dds.k3003.repository.PdiRepository;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
+@Scope("prototype")
 public class FachadaFuenteImple implements FachadaFuente {
 
-
+  @Setter
+  @Getter
+  private String id;
   private final ColeccionRepository coleccionRepository;
   private final HechoRepository hechoRepository;
   @Getter
@@ -79,7 +84,7 @@ public class FachadaFuenteImple implements FachadaFuente {
 
     val hecho = new Hecho(hechoDTO.id(), hechoDTO.titulo(),
         hechoDTO.nombreColeccion(), hechoDTO.categoria(), hechoDTO.ubicacion(),
-        hechoDTO.fecha(), hechoDTO.origen(), hechoDTO.etiquetas());
+        hechoDTO.fecha(), hechoDTO.origen(), hechoDTO.etiquetas(), this.id);
     this.hechoRepository.save(hecho);
     return new HechoDTO(hecho.getId(), hecho.getNombreColeccion(), hecho.getTitulo(),
         hecho.getEtiquetas(), hecho.getCategoria(), hecho.getUbicacion(), hecho.getFecha(),
@@ -100,7 +105,7 @@ public class FachadaFuenteImple implements FachadaFuente {
 
   @Override
   public List<HechoDTO> buscarHechosXColeccion(String coleccionId) throws NoSuchElementException {
-    List<Hecho> hechos = this.hechoRepository.findByNombreColeccion(coleccionId);
+    List<Hecho> hechos = this.hechoRepository.findByNombreColeccionAndIdFuenteFachada(coleccionId, id);
     if (hechos.isEmpty()) {
       throw new NoSuchElementException(coleccionId + " no existe");
     }

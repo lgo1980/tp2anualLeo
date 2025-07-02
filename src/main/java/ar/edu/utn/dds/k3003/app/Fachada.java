@@ -18,6 +18,7 @@ import ar.edu.utn.dds.k3003.repository.InMemoryagregadorRepo;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.val;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.security.InvalidParameterException;
@@ -34,13 +35,15 @@ public class Fachada implements FachadaAgregador {
   @Getter
   private Agregador agregador;
   private final AgregadorRepository agregadorRepository;
-  @Autowired
-  private FachadaFuente fachadaFuente;
+  private final ObjectProvider<FachadaFuenteImple> fachadaFuenteProvider;
 
   @Autowired
-  public Fachada(FuenteRepository fuenteRepository, AgregadorRepository agregadorRepository) {
+  public Fachada(FuenteRepository fuenteRepository,
+                 AgregadorRepository agregadorRepository,
+                 ObjectProvider<FachadaFuenteImple> fachadaFuenteProvider) {
     this.fuenteRepository = fuenteRepository;
     this.agregadorRepository = agregadorRepository;
+    this.fachadaFuenteProvider = fachadaFuenteProvider;
 
 //    Optional<Agregador> agregador1 = agregadorRepository.findById("1");
 //    this.agregador = obtenerAgregadorConFuentes("1");
@@ -53,7 +56,11 @@ public class Fachada implements FachadaAgregador {
 
     // reconstruye las FuenteFachada en memoria
     List<FuenteFachada> fuentes = new ArrayList<>(a.getFuenteIds().stream()
-        .map(fid -> new FuenteFachada(fid, fachadaFuente))
+        .map(fid -> {
+          FachadaFuenteImple instancia = fachadaFuenteProvider.getObject(); // 👈 nueva instancia
+          instancia.setId(fid); // 👈 seteás el id único
+          return new FuenteFachada(fid, instancia);
+        })
         .toList());
 
     a.setFuentes(fuentes);
@@ -61,6 +68,7 @@ public class Fachada implements FachadaAgregador {
   }
 
   public Fachada() {
+    this.fachadaFuenteProvider = null;
     this.fuenteRepository = new InMemoryFuenteRepo();
     this.agregadorRepository = new InMemoryagregadorRepo();
     Optional<Agregador> agregador1 = agregadorRepository.findById("1");

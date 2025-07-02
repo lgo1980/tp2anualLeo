@@ -10,6 +10,8 @@ public interface HechoRepository {
 
   Hecho save(Hecho col);
 
-  List<Hecho> findByNombreColeccion(String coleccion);
+  //  List<Hecho> findByNombreColeccion(String coleccion);
+  List<Hecho> findByNombreColeccionAndIdFuenteFachada(String nombreColeccion, String idFuenteFachada);
+
 
 }

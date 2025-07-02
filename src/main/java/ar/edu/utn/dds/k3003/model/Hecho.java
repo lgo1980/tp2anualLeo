@@ -32,12 +32,14 @@ public class Hecho {
   @CollectionTable(name = "hecho_etiquetas", joinColumns = @JoinColumn(name = "hecho_id"))
   @Column(name = "etiqueta")
   private List<String> etiquetas;
+  private String idFuenteFachada;
 
   public Hecho() {
   }
 
   public Hecho(String id, String titulo, String nombreColeccion, CategoriaHechoEnum categoria,
-               String ubicacion, LocalDateTime fecha, String origen, List<String> etiquetas) {
+               String ubicacion, LocalDateTime fecha, String origen, List<String> etiquetas,
+               String idFuenteFachada) {
     this.id = id;
     this.titulo = titulo;
     this.nombreColeccion = nombreColeccion;
@@ -46,6 +48,7 @@ public class Hecho {
     this.fecha = fecha;
     this.origen = origen;
     this.etiquetas = etiquetas;
+    this.idFuenteFachada = idFuenteFachada;
   }
 
 }
