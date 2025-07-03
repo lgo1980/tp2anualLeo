@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import java.util.HashMap;
 import java.util.Map;
 import jakarta.persistence.Transient;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,9 +32,13 @@ public class Agregador {
   private String id;
 
   @ElementCollection(fetch = FetchType.EAGER)
-  @CollectionTable(name = "agregador_fuentes", joinColumns = @JoinColumn(name = "agregador_id"))
+  @CollectionTable(
+      name = "agregador_fuentes",
+      joinColumns = @JoinColumn(name = "agregador_id"),
+      uniqueConstraints = @UniqueConstraint(columnNames = {"agregador_id", "fuente_id"})
+  )
   @Column(name = "fuente_id")
-  private List<String> fuenteIds = new ArrayList<>();
+  private Set<String> fuenteIds = new HashSet<>();
 
   @Transient
   private List<FuenteFachada> fuentes = new ArrayList<>();
@@ -47,6 +52,10 @@ public class Agregador {
 
   public Agregador(String id) {
     this.id = id;
+  }
+
+  public void setFuenteIds(Set<String> fuenteIds) {
+    this.fuenteIds = new HashSet<>(fuenteIds); // siempre lo hacés mutable al setear
   }
 
   public void agregarFuente(FuenteFachada fuente) {

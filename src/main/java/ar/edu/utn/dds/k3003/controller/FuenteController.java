@@ -1,6 +1,7 @@
 package ar.edu.utn.dds.k3003.controller;
 
 import ar.edu.utn.dds.k3003.dto.CambioConsensoDTO;
+import ar.edu.utn.dds.k3003.dto.FuenteFachadaDTO;
 import ar.edu.utn.dds.k3003.facades.FachadaAgregador;
 import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
@@ -52,8 +53,8 @@ public class FuenteController {
 
   @PostMapping("/fuente_fahada")
   public ResponseEntity<?> agregarFuenteFachada(
-      @RequestBody String id) {
-    fachadaAgregador.addFachadaFuentes(id, fuente1);
+      @RequestBody FuenteFachadaDTO dto) {
+    fachadaAgregador.addFachadaFuentes(dto.id(), fuente1);
     return ResponseEntity.noContent().build();
   }
 

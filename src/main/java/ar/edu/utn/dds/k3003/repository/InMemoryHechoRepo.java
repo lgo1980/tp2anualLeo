@@ -30,8 +30,10 @@ public class InMemoryHechoRepo implements HechoRepository {
     return hecho;
   }
 
-  public List<Hecho> findByNombreColeccion(String coleccion) {
-    return this.hechos.stream().filter(x -> x.getNombreColeccion().equals(coleccion)).toList();
+  public List<Hecho> findByNombreColeccionAndIdFuenteFachada(String nombreColeccion, String idFuenteFachada) {
+    return this.hechos.stream().filter(x
+        -> x.getNombreColeccion().equals(nombreColeccion) &&
+        x.getIdFuenteFachada().equals(idFuenteFachada)).toList();
   }
 
 }

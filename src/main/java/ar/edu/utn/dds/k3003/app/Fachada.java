@@ -22,10 +22,11 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,13 +56,13 @@ public class Fachada implements FachadaAgregador {
     Agregador a = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador(id)));
 
     // reconstruye las FuenteFachada en memoria
-    List<FuenteFachada> fuentes = new ArrayList<>(a.getFuenteIds().stream()
+    List<FuenteFachada> fuentes = a.getFuenteIds().stream()
         .map(fid -> {
-          FachadaFuenteImple instancia = fachadaFuenteProvider.getObject(); // 👈 nueva instancia
-          instancia.setId(fid); // 👈 seteás el id único
+          FachadaFuenteImple instancia = fachadaFuenteProvider.getObject(); // 👈 nueva instancia por id
+          instancia.setId(fid);
           return new FuenteFachada(fid, instancia);
         })
-        .toList());
+        .toList();
 
     a.setFuentes(fuentes);
     return a;
@@ -112,7 +113,15 @@ public class Fachada implements FachadaAgregador {
 
   @Override
   public void addFachadaFuentes(String fuenteId, FachadaFuente fuente) {
-    agregador.getFuenteIds().add(fuenteId);
+    Set<String> fuenteIds = agregador.getFuenteIds();
+
+    // Asegurarse de que sea mutable
+    if (!(fuenteIds instanceof HashSet)) {
+      fuenteIds = new HashSet<>(fuenteIds);           // Crear nueva instancia mutable
+      agregador.setFuenteIds(fuenteIds);              // Reasignar
+    }
+
+    fuenteIds.add(fuenteId);
     agregador.agregarFuente(new FuenteFachada(fuenteId, fuente));
     agregadorRepository.save(agregador);
   }
