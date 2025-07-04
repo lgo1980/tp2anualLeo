@@ -58,6 +58,10 @@ public class Agregador {
     this.fuenteIds = new HashSet<>(fuenteIds); // siempre lo hacés mutable al setear
   }
 
+  public void agregarFuenteId(String fuenteId) {
+    fuenteIds.add(fuenteId);
+  }
+
   public void agregarFuente(FuenteFachada fuente) {
     fuentes.add(fuente);
   }

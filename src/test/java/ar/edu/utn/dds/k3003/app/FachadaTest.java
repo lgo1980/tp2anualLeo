@@ -2,6 +2,7 @@ package ar.edu.utn.dds.k3003.app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import ar.edu.utn.dds.k3003.facades.dtos.ColeccionDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import ar.edu.utn.dds.k3003.model.Coleccion;
@@ -93,6 +94,7 @@ public class FachadaTest {
   @Test
   @DisplayName("Se quiere buscar los hecho de una coleccion")
   void testBuscarHechosXColeccion() {
+    fachada.setId("1");
     fachada.agregar(new HechoDTO(UN_HECHO, UNA_COLECCION, "UnTitulo"));
     List<HechoDTO> hechoDTOS = fachada.buscarHechosXColeccion(UNA_COLECCION);
     assertEquals(1, hechoDTOS.size());

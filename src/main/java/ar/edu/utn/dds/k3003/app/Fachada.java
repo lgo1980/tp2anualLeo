@@ -121,8 +121,9 @@ public class Fachada implements FachadaAgregador {
       agregador.setFuenteIds(fuenteIds);              // Reasignar
     }
 
-    fuenteIds.add(fuenteId);
-    agregador.agregarFuente(new FuenteFachada(fuenteId, fuente));
+//    fuenteIds.add(fuenteId);
+//    agregador.agregarFuente(new FuenteFachada(fuenteId, fuente));
+    agregador.agregarFuenteId(fuenteId);
     agregadorRepository.save(agregador);
   }
 
