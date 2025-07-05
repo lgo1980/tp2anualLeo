@@ -45,17 +45,11 @@ public class Fachada implements FachadaAgregador {
     this.fuenteRepository = fuenteRepository;
     this.agregadorRepository = agregadorRepository;
     this.fachadaFuenteProvider = fachadaFuenteProvider;
-
-//    Optional<Agregador> agregador1 = agregadorRepository.findById("1");
-//    this.agregador = obtenerAgregadorConFuentes("1");
-
   }
 
   public Agregador obtenerAgregadorConFuentes(String id) {
     Optional<Agregador> agregador1 = agregadorRepository.findById(id);
     Agregador a = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador(id)));
-
-    // reconstruye las FuenteFachada en memoria
     List<FuenteFachada> fuentes = a.getFuenteIds().stream()
         .map(fid -> {
           FachadaFuenteImple instancia = fachadaFuenteProvider.getObject(); // 👈 nueva instancia por id
@@ -114,16 +108,12 @@ public class Fachada implements FachadaAgregador {
   @Override
   public void addFachadaFuentes(String fuenteId, FachadaFuente fuente) {
     Set<String> fuenteIds = agregador.getFuenteIds();
-
-    // Asegurarse de que sea mutable
     if (!(fuenteIds instanceof HashSet)) {
-      fuenteIds = new HashSet<>(fuenteIds);           // Crear nueva instancia mutable
-      agregador.setFuenteIds(fuenteIds);              // Reasignar
+      fuenteIds = new HashSet<>(fuenteIds);
+      agregador.setFuenteIds(fuenteIds);
     }
-
-//    fuenteIds.add(fuenteId);
-//    agregador.agregarFuente(new FuenteFachada(fuenteId, fuente));
     agregador.agregarFuenteId(fuenteId);
+    agregador.agregarFuente(new FuenteFachada(fuenteId, fuente));
     agregadorRepository.save(agregador);
   }
 
