@@ -19,7 +19,7 @@ VOLUME /tmp
 # Copiamos el JAR generado en la etapa de build
 COPY --from=build /app/target/*.jar app.jar
 
-ENV URL_PROCESADOR=https://two025-tp-entrega-2-jagrivero.onrender.com/
+ENV URL_FACHADA_FUENTE=https://two025-tp-entrega-2-jagrivero.onrender.com/
 # Definimos el comando de inicio
 ENTRYPOINT ["java","-jar","/app.jar"]
 

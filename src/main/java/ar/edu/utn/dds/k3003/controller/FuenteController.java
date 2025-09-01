@@ -5,7 +5,7 @@ import ar.edu.utn.dds.k3003.dto.FuenteFachadaDTO;
 import ar.edu.utn.dds.k3003.facades.FachadaAgregador;
 import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -21,11 +21,14 @@ import java.util.List;
 @RequestMapping("/fuentes")
 public class FuenteController {
 
-  @Autowired
-  private FachadaAgregador fachadaAgregador;
+  private final FachadaAgregador fachadaAgregador;
+  private final FachadaFuente fachadaFuente;
 
-  @Autowired
-  private FachadaFuente fuente1;
+  public FuenteController(FachadaAgregador fachadaAgregador,
+                          @Qualifier("fachadaFuenteRemota") FachadaFuente fachadaFuente) {
+    this.fachadaAgregador = fachadaAgregador;
+    this.fachadaFuente = fachadaFuente;
+  }
 
   @GetMapping
   public ResponseEntity<List<FuenteDTO>> listarFuentes() {
@@ -54,7 +57,7 @@ public class FuenteController {
   @PostMapping("/fuente_fahada")
   public ResponseEntity<?> agregarFuenteFachada(
       @RequestBody FuenteFachadaDTO dto) {
-    fachadaAgregador.addFachadaFuentes(dto.id(), fuente1);
+    fachadaAgregador.addFachadaFuentes(dto.id(), fachadaFuente);
     return ResponseEntity.noContent().build();
   }
 

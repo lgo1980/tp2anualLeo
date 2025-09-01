@@ -4,7 +4,7 @@ import ar.edu.utn.dds.k3003.facades.FachadaAgregador;
 import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.ColeccionDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,11 +14,14 @@ import java.util.List;
 @RequestMapping("/colecciones")
 public class ColeccionController {
 
-  @Autowired
-  private FachadaFuente fachadaFuente;
+  private final FachadaAgregador fachadaAgregador;
+  private final FachadaFuente fachadaFuente;
 
-  @Autowired
-  private FachadaAgregador fachadaAgregador;
+  public ColeccionController(FachadaAgregador fachadaAgregador,
+                             @Qualifier("fachadaFuenteRemota") FachadaFuente fachadaFuente) {
+    this.fachadaAgregador = fachadaAgregador;
+    this.fachadaFuente = fachadaFuente;
+  }
 
   @GetMapping
   public ResponseEntity<List<ColeccionDTO>> listarColecciones() {

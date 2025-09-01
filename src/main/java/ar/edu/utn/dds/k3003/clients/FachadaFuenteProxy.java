@@ -6,18 +6,20 @@ import ar.edu.utn.dds.k3003.facades.dtos.ColeccionDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.PdIDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import org.springframework.stereotype.Service;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Service("fachadaFuenteRemota")
 public class FachadaFuenteProxy implements FachadaFuente {
 
   private final String endpoint;
   private final FachadaFuenteRetrofitClient service;
 
   public FachadaFuenteProxy(ObjectMapper objectMapper) {
-
     var env = System.getenv();
     this.endpoint = env.getOrDefault("URL_FACHADA_FUENTE", "http://localhost:8081/");
 
@@ -32,41 +34,90 @@ public class FachadaFuenteProxy implements FachadaFuente {
 
   @Override
   public ColeccionDTO agregar(ColeccionDTO coleccionDTO) {
-    return null;
+    try {
+      return service.agregarColeccion(coleccionDTO).execute().body();
+    } catch (IOException e) {
+      throw new RuntimeException("Error al agregar coleccion", e);
+    }
   }
 
   @Override
   public ColeccionDTO buscarColeccionXId(String coleccionId) throws NoSuchElementException {
-    return null;
+    try {
+      var response = service.buscarColeccionXId(coleccionId).execute();
+      if (response.isSuccessful() && response.body() != null) {
+        return response.body();
+      } else {
+        throw new NoSuchElementException("No se encontró coleccion con id: " + coleccionId);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("Error al buscar coleccion", e);
+    }
   }
 
   @Override
   public HechoDTO agregar(HechoDTO hechoDTO) {
-    return null;
+    try {
+      return service.agregarHecho(hechoDTO).execute().body();
+    } catch (IOException e) {
+      throw new RuntimeException("Error al agregar hecho", e);
+    }
   }
 
   @Override
   public HechoDTO buscarHechoXId(String hechoId) throws NoSuchElementException {
-    return null;
+    try {
+      var response = service.buscarHechoXId(hechoId).execute();
+      if (response.isSuccessful() && response.body() != null) {
+        return response.body();
+      } else {
+        throw new NoSuchElementException("No se encontró hecho con id: " + hechoId);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("Error al buscar hecho", e);
+    }
   }
 
   @Override
   public List<HechoDTO> buscarHechosXColeccion(String coleccionId) throws NoSuchElementException {
-    return List.of();
+    try {
+      var response = service.buscarHechosXColeccion(coleccionId).execute();
+      if (response.isSuccessful() && response.body() != null) {
+        return response.body();
+      } else {
+        throw new NoSuchElementException("No se encontraron hechos para la coleccion " + coleccionId);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("Error al buscar hechos por coleccion", e);
+    }
   }
 
   @Override
   public void setProcesadorPdI(FachadaProcesadorPdI procesador) {
-
+    // Este probablemente no se use en la fachada remota
   }
 
   @Override
   public PdIDTO agregar(PdIDTO pdIDTO) throws IllegalStateException {
-    return null;
+    try {
+      return service.agregarPdi(pdIDTO).execute().body();
+    } catch (IOException e) {
+      throw new RuntimeException("Error al agregar PDI", e);
+    }
   }
 
   @Override
   public List<ColeccionDTO> colecciones() {
-    return List.of();
+    try {
+      var response = service.colecciones().execute();
+      if (response.isSuccessful() && response.body() != null) {
+        return response.body();
+      } else {
+        return List.of();
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("Error al obtener colecciones", e);
+    }
   }
+
 }
