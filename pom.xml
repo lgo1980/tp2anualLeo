@@ -26,6 +26,7 @@
         <!-- Dependencies versions -->
         <junit.version>5.10.2</junit.version>
         <mockito.version>5.11.0</mockito.version>
+        <retrofit.version>2.11.0</retrofit.version>
     </properties>
 
     <dependencies>
@@ -41,6 +42,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-jackson</artifactId>
+            <version>${retrofit.version}</version>
         </dependency>
 
         <dependency>
