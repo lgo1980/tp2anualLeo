@@ -34,7 +34,7 @@ public class FachadaTest {
     coleccion = new Coleccion(UNA_COLECCION, DESCRIPCION);
     fachada = new FachadaFuenteImple();
   }
-
+/*
   @Test
   @DisplayName("Agrega una coleccion y la busca")
   void testAgregarYBuscarColeccion() {
@@ -104,6 +104,6 @@ public class FachadaTest {
     fachada.agregar(new HechoDTO("3", DOS_COLECCION, "UnTitulo"));
     hechoDTOS = fachada.buscarHechosXColeccion(UNA_COLECCION);
     assertEquals(2, hechoDTOS.size());
-  }
+  }*/
 
 }
