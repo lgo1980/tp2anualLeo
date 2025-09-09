@@ -13,7 +13,7 @@ import retrofit2.http.Path;
 
 public interface FachadaFuenteRetrofitClient {
 
-  @POST("colecciones")
+  @POST("/api/colecciones")
   Call<ColeccionDTO> agregarColeccion(@Body ColeccionDTO coleccion);
 
   @GET("/api/colecciones/{id}")
@@ -31,7 +31,7 @@ public interface FachadaFuenteRetrofitClient {
   @POST("pdis")
   Call<PdIDTO> agregarPdi(@Body PdIDTO pdi);
 
-  @GET("colecciones")
+  @GET("/api/colecciones")
   Call<List<ColeccionDTO>> colecciones();
 
 }
