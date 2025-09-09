@@ -25,7 +25,7 @@ public class FuenteController {
   private final FachadaFuente fachadaFuente;
 
   public FuenteController(FachadaAgregador fachadaAgregador,
-                          @Qualifier("fachadaFuenteRemota") FachadaFuente fachadaFuente) {
+                          FachadaFuente fachadaFuente) {
     this.fachadaAgregador = fachadaAgregador;
     this.fachadaFuente = fachadaFuente;
   }

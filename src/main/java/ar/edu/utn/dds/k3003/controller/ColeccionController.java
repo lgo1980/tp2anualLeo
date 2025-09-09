@@ -4,7 +4,6 @@ import ar.edu.utn.dds.k3003.facades.FachadaAgregador;
 import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.ColeccionDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +17,7 @@ public class ColeccionController {
   private final FachadaFuente fachadaFuente;
 
   public ColeccionController(FachadaAgregador fachadaAgregador,
-                             @Qualifier("fachadaFuenteRemota") FachadaFuente fachadaFuente) {
+                             FachadaFuente fachadaFuente) {
     this.fachadaAgregador = fachadaAgregador;
     this.fachadaFuente = fachadaFuente;
   }
