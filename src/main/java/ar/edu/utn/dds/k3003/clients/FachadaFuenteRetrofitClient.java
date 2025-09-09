@@ -15,7 +15,7 @@ public interface FachadaFuenteRetrofitClient {
   @POST("colecciones")
   Call<ColeccionDTO> agregarColeccion(@Body ColeccionDTO coleccion);
 
-  @GET("colecciones/{id}")
+  @GET("/api/colecciones/{id}")
   Call<ColeccionDTO> buscarColeccionXId(@Path("id") String id);
 
   @POST("hechos")
