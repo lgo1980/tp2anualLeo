@@ -7,16 +7,20 @@ import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.PdIDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Service
 public class FachadaFuenteProxy implements FachadaFuente {
 
   private final String endpoint;
   private final FachadaFuenteRetrofitClient service;
 
+  @Autowired
   public FachadaFuenteProxy(ObjectMapper objectMapper) {
     var env = System.getenv();
     this.endpoint = env.getOrDefault("URL_FACHADA_FUENTE", "http://localhost:8081/");
