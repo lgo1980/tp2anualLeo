@@ -36,12 +36,12 @@ public class Fachada implements FachadaAgregador {
   @Getter
   private Agregador agregador;
   private final AgregadorRepository agregadorRepository;
-  private final ObjectProvider<FachadaFuenteImple> fachadaFuenteProvider;
+  private final ObjectProvider<FachadaFuente> fachadaFuenteProvider;
 
   @Autowired
   public Fachada(FuenteRepository fuenteRepository,
                  AgregadorRepository agregadorRepository,
-                 ObjectProvider<FachadaFuenteImple> fachadaFuenteProvider) {
+                 ObjectProvider<FachadaFuente> fachadaFuenteProvider) {
     this.fuenteRepository = fuenteRepository;
     this.agregadorRepository = agregadorRepository;
     this.fachadaFuenteProvider = fachadaFuenteProvider;
@@ -52,8 +52,8 @@ public class Fachada implements FachadaAgregador {
     Agregador a = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador(id)));
     List<FuenteFachada> fuentes = a.getFuenteIds().stream()
         .map(fid -> {
-          FachadaFuenteImple instancia = fachadaFuenteProvider.getObject(); // 👈 nueva instancia por id
-          instancia.setId(fid);
+          FachadaFuente instancia = fachadaFuenteProvider.getObject(); // 👈 nueva instancia por id
+//          instancia.setId(fid);
           return new FuenteFachada(fid, instancia);
         })
         .toList();

@@ -7,13 +7,11 @@ import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.PdIDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import org.springframework.stereotype.Service;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@Service("fachadaFuenteRemota")
 public class FachadaFuenteProxy implements FachadaFuente {
 
   private final String endpoint;
@@ -45,6 +43,7 @@ public class FachadaFuenteProxy implements FachadaFuente {
   public ColeccionDTO buscarColeccionXId(String coleccionId) throws NoSuchElementException {
     try {
       var response = service.buscarColeccionXId(coleccionId).execute();
+      System.out.println("estamos buscando  por id");
       if (response.isSuccessful() && response.body() != null) {
         return response.body();
       } else {

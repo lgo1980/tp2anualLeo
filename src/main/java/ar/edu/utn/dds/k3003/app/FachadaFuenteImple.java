@@ -23,11 +23,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-
+/*
 @Service("fachadaFuenteLocal")
-@Scope("prototype")
-public class FachadaFuenteImple implements FachadaFuente {
-
+@Scope("prototype")*/
+public class FachadaFuenteImple /*implements FachadaFuente*/ {
+/*
   @Setter
   @Getter
   private String id;
@@ -152,5 +152,5 @@ public class FachadaFuenteImple implements FachadaFuente {
     return colecciones.stream()
         .map(coleccion -> new ColeccionDTO(coleccion.getNombre(), coleccion.getDescripcion()))
         .collect(Collectors.toList());
-  }
+  }*/
 }
