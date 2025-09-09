@@ -4,7 +4,6 @@ import ar.edu.utn.dds.k3003.facades.dtos.ColeccionDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.PdIDTO;
 import java.util.List;
-import org.springframework.stereotype.Service;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
