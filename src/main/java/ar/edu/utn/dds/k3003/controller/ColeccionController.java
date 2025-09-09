@@ -4,6 +4,7 @@ import ar.edu.utn.dds.k3003.facades.FachadaAgregador;
 import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.ColeccionDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ public class ColeccionController {
   private final FachadaAgregador fachadaAgregador;
   private final FachadaFuente fachadaFuente;
 
+  @Autowired
   public ColeccionController(FachadaAgregador fachadaAgregador,
                              FachadaFuente fachadaFuente) {
     this.fachadaAgregador = fachadaAgregador;
