@@ -5,6 +5,7 @@ import ar.edu.utn.dds.k3003.dto.FuenteFachadaDTO;
 import ar.edu.utn.dds.k3003.facades.FachadaAgregador;
 import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import java.util.List;
 public class FuenteController {
 
   private final FachadaAgregador fachadaAgregador;
+  @Autowired
   private final FachadaFuente fachadaFuente;
 
   public FuenteController(FachadaAgregador fachadaAgregador,

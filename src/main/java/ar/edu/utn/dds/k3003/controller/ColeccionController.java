@@ -15,10 +15,9 @@ import java.util.List;
 public class ColeccionController {
 
   private final FachadaAgregador fachadaAgregador;
+  @Autowired
   private final FachadaFuente fachadaFuente;
 
- /* hola*/
-  @Autowired
   public ColeccionController(FachadaAgregador fachadaAgregador,
                              FachadaFuente fachadaFuente) {
     this.fachadaAgregador = fachadaAgregador;
