@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class Fachada implements FachadaAgregador {
@@ -108,14 +109,30 @@ public class Fachada implements FachadaAgregador {
     List<FuenteDTO> fuentes = fuentes();
     Set<String> titulosVistos = new HashSet<>();
     HechoService hechoService = new HechoService();
-    Set<HechoDTO> hechosUnicos = fuentes.stream()
+    Set<HechoDTO> hechosUnicos = new HashSet<>(fuentes.stream()
+        .flatMap(fuente -> {
+          try {
+            return hechoService.obtenerHechos(fuente, coleccionId).stream();
+          } catch (Exception e) {
+            System.err.println("Error consultando fuente " + fuente.endpoint() + ": " + e.getMessage());
+            return Stream.empty(); // evita que se rompa el pipeline
+          }
+        })
+        .collect(Collectors.toMap(
+            hecho -> hecho.titulo() == null ? "" : hecho.titulo().toLowerCase(),
+            hecho -> hecho,
+            (hechoExistente, nuevoHecho) -> hechoExistente // en caso de duplicado, quedarse con el primero
+        ))
+        .values());
+
+    /*Set<HechoDTO> hechosUnicos = fuentes.stream()
         .flatMap(fuente -> hechoService.obtenerHechos(fuente, coleccionId).stream())
         .collect(Collectors.collectingAndThen(
             Collectors.toCollection(() ->
                 new TreeSet<>(Comparator.comparing(h -> h.titulo().toLowerCase()))
             ),
             HashSet::new
-        ));
+        ));*/
     return agregador.validarHechos(hechosUnicos, coleccionId);
 /*
     Set<HechoDTO> hechosUnicos = fuentes.stream()
