@@ -20,6 +20,7 @@ public class ConsensoMultiples extends Consenso {
     HechoService hechoService = new HechoService();
     int contador = 0;
     for (FuenteDTO fuente : fuentes) {
+      System.out.println("El nombre de la coleccion: " + hecho.nombreColeccion());
       List<HechoDTO> hechos = hechoService.obtenerHechos(fuente, hecho.nombreColeccion());
 
       boolean estaPresente = hechos.stream()
