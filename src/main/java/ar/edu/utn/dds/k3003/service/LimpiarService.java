@@ -25,9 +25,9 @@ public class LimpiarService {
 
   @Transactional
   public void limpiarEntidades() {
+    agregadorRepositoryImpl.deleteAll();
     consensoRepository.deleteAll();
     fuenteRepositoryImpl.deleteAll();
-    agregadorRepositoryImpl.deleteAll();
   }
 
 }
