@@ -15,7 +15,8 @@ public class HechoService {
 
   public List<HechoDTO> obtenerHechos(FuenteDTO fuente, String nombreColeccion) {
 
-    String url = fuente.endpoint() + "/api/colecciones/" + nombreColeccion + "/hechos";
+    String base = normalizarEndpoint(fuente.endpoint());
+    String url = base + "/api/colecciones/" + nombreColeccion + "/hechos";
 
     ResponseEntity<List<HechoDTO>> response = restTemplate.exchange(
         url,
@@ -37,5 +38,12 @@ public class HechoService {
             h.origen()
         ))
         .toList();
+  }
+
+  private String normalizarEndpoint(String endpoint) {
+    if (!endpoint.startsWith("http://") && !endpoint.startsWith("https://")) {
+      return "https://" + endpoint;
+    }
+    return endpoint;
   }
 }
