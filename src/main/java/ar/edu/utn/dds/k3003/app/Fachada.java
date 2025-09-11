@@ -23,13 +23,11 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.security.InvalidParameterException;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -115,33 +113,25 @@ public class Fachada implements FachadaAgregador {
             return hechoService.obtenerHechos(fuente, coleccionId).stream();
           } catch (Exception e) {
             System.err.println("Error consultando fuente " + fuente.endpoint() + ": " + e.getMessage());
-            return Stream.empty(); // evita que se rompa el pipeline
+            return Stream.empty();
           }
         })
         .collect(Collectors.toMap(
             hecho -> hecho.titulo() == null ? "" : hecho.titulo().toLowerCase(),
             hecho -> hecho,
-            (hechoExistente, nuevoHecho) -> hechoExistente // en caso de duplicado, quedarse con el primero
+            (hechoExistente, nuevoHecho) -> hechoExistente
         ))
         .values());
-
-    /*Set<HechoDTO> hechosUnicos = fuentes.stream()
-        .flatMap(fuente -> hechoService.obtenerHechos(fuente, coleccionId).stream())
-        .collect(Collectors.collectingAndThen(
-            Collectors.toCollection(() ->
-                new TreeSet<>(Comparator.comparing(h -> h.titulo().toLowerCase()))
-            ),
-            HashSet::new
-        ));*/
     return agregador.validarHechos(hechosUnicos, coleccionId);
-/*
+  }
+
+  /*
     Set<HechoDTO> hechosUnicos = fuentes.stream()
         .flatMap(fuente -> hechoService.obtenerHechos(fuente, coleccionId))
         .filter(hecho -> titulosVistos.add(hecho..toLowerCase())) // solo se agregan títulos nuevos
         .collect(Collectors.toSet());
     return validarHechos(hechosUnicos, coleccionId);*/
-    //return agregador.consultarHechosPor(coleccionId);
-  }
+  //return agregador.consultarHechosPor(coleccionId);
 
   @Override
   public void addFachadaFuentes(String fuenteId, FachadaFuente fuente) {
