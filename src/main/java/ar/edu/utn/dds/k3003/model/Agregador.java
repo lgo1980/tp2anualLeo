@@ -75,7 +75,7 @@ public class Agregador {
     return validarHechos(hechosUnicos, coleccionId);
   }
 
-  private List<HechoDTO> validarHechos(Set<HechoDTO> hechos, String coleccionId) {
+  public List<HechoDTO> validarHechos(Set<HechoDTO> hechos, String coleccionId) {
     Consenso consenso = consensos.get(coleccionId);
     return hechos.stream().filter(hechoDTO -> consenso.aplicar(hechoDTO, fuentes)).toList();
   }

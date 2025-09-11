@@ -15,6 +15,7 @@ import ar.edu.utn.dds.k3003.model.Agregador;
 import ar.edu.utn.dds.k3003.model.Fuente;
 import ar.edu.utn.dds.k3003.repository.FuenteRepository;
 import ar.edu.utn.dds.k3003.repository.InMemoryagregadorRepo;
+import ar.edu.utn.dds.k3003.service.HechoService;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.val;
@@ -22,11 +23,13 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.security.InvalidParameterException;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -102,7 +105,25 @@ public class Fachada implements FachadaAgregador {
 
   @Override
   public List<HechoDTO> hechos(String coleccionId) throws NoSuchElementException {
-    return agregador.consultarHechosPor(coleccionId);
+    List<FuenteDTO> fuentes = fuentes();
+    Set<String> titulosVistos = new HashSet<>();
+    HechoService hechoService = new HechoService();
+    Set<HechoDTO> hechosUnicos = fuentes.stream()
+        .flatMap(fuente -> hechoService.obtenerHechos(fuente, coleccionId).stream())
+        .collect(Collectors.collectingAndThen(
+            Collectors.toCollection(() ->
+                new TreeSet<>(Comparator.comparing(h -> h.titulo().toLowerCase()))
+            ),
+            HashSet::new
+        ));
+    return agregador.validarHechos(hechosUnicos, coleccionId);
+/*
+    Set<HechoDTO> hechosUnicos = fuentes.stream()
+        .flatMap(fuente -> hechoService.obtenerHechos(fuente, coleccionId))
+        .filter(hecho -> titulosVistos.add(hecho..toLowerCase())) // solo se agregan títulos nuevos
+        .collect(Collectors.toSet());
+    return validarHechos(hechosUnicos, coleccionId);*/
+    //return agregador.consultarHechosPor(coleccionId);
   }
 
   @Override
