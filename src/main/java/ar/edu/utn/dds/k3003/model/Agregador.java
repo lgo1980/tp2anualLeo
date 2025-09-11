@@ -1,5 +1,6 @@
 package ar.edu.utn.dds.k3003.model;
 
+import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "Agregadores")
@@ -67,15 +67,17 @@ public class Agregador {
   }
 
   public List<HechoDTO> consultarHechosPor(String coleccionId) {
-    Set<String> titulosVistos = new HashSet<>();
+    /*Set<String> titulosVistos = new HashSet<>();
     Set<HechoDTO> hechosUnicos = fuentes.stream()
         .flatMap(fuente -> fuente.getFuente().buscarHechosXColeccion(coleccionId).stream())
         .filter(hecho -> titulosVistos.add(hecho.titulo().toLowerCase())) // solo se agregan títulos nuevos
         .collect(Collectors.toSet());
-    return validarHechos(hechosUnicos, coleccionId);
+    return validarHechos(hechosUnicos, coleccionId);*/
+    return null;
   }
 
-  public List<HechoDTO> validarHechos(Set<HechoDTO> hechos, String coleccionId) {
+  public List<HechoDTO> validarHechos(Set<HechoDTO> hechos,
+                                      String coleccionId, List<FuenteDTO> fuentes) {
     Consenso consenso = consensos.get(coleccionId);
     return hechos.stream().filter(hechoDTO -> consenso.aplicar(hechoDTO, fuentes)).toList();
   }

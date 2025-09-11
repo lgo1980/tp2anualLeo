@@ -1,5 +1,6 @@
 package ar.edu.utn.dds.k3003.model;
 
+import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -21,5 +22,5 @@ public abstract class Consenso {
     this.id = UUID.randomUUID().toString();
   }
 
-  public abstract Boolean aplicar(HechoDTO hecho, List<FuenteFachada> fuentes);
+  public abstract Boolean aplicar(HechoDTO hecho, List<FuenteDTO> fuentes);
 }

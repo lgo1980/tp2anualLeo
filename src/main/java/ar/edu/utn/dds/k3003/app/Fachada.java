@@ -122,7 +122,7 @@ public class Fachada implements FachadaAgregador {
             (hechoExistente, nuevoHecho) -> hechoExistente
         ))
         .values());
-    return agregador.validarHechos(hechosUnicos, coleccionId);
+    return agregador.validarHechos(hechosUnicos, coleccionId, fuentes);
   }
 
   /*
