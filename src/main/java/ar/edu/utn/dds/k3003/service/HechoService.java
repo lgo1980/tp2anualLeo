@@ -14,36 +14,33 @@ public class HechoService {
   private final RestTemplate restTemplate = new RestTemplate();
 
   public List<HechoDTO> obtenerHechos(FuenteDTO fuente, String nombreColeccion) {
+    String url = fuente.endpoint() + "/api/colecciones/" + nombreColeccion + "/hechos";
+    try {
+      ResponseEntity<List<HechoDTO>> response = restTemplate.exchange(
+          url,
+          HttpMethod.GET,
+          null,
+          new ParameterizedTypeReference<>() {
+          }
+      );
 
-    String base = normalizarEndpoint(fuente.endpoint());
-    String url = base + "/api/colecciones/" + nombreColeccion + "/hechos";
+      return Objects.requireNonNullElse(response.getBody(), List.<HechoDTO>of()).stream()
+          .map(h -> new HechoDTO(
+              h.id(),
+              nombreColeccion, // lo forzás acá
+              h.titulo(),
+              h.etiquetas(),
+              h.categoria(),
+              h.ubicacion(),
+              h.fecha(),
+              h.origen()
+          ))
+          .toList();
 
-    ResponseEntity<List<HechoDTO>> response = restTemplate.exchange(
-        url,
-        HttpMethod.GET,
-        null,
-        new ParameterizedTypeReference<>() {
-        }
-    );
-
-    return Objects.requireNonNull(response.getBody()).stream()
-        .map(h -> new HechoDTO(
-            h.id(),
-            nombreColeccion, // lo forzás acá
-            h.titulo(),
-            h.etiquetas(),
-            h.categoria(),
-            h.ubicacion(),
-            h.fecha(),
-            h.origen()
-        ))
-        .toList();
-  }
-
-  private String normalizarEndpoint(String endpoint) {
-    if (!endpoint.startsWith("http://") && !endpoint.startsWith("https://")) {
-      return "https://" + endpoint;
+    } catch (Exception e) {
+      System.err.println("No se pudo consultar la fuente " + fuente.endpoint() + ": " + e.getMessage());
+      return List.of(); // devolvés lista vacía si la fuente está caída
     }
-    return endpoint;
   }
+
 }
