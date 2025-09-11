@@ -10,6 +10,9 @@ import ar.edu.utn.dds.k3003.model.ConsensoMultiples;
 import ar.edu.utn.dds.k3003.model.ConsensoTodos;
 import ar.edu.utn.dds.k3003.model.FuenteFachada;
 import ar.edu.utn.dds.k3003.repository.AgregadorRepository;
+import ar.edu.utn.dds.k3003.repository.ConsensoRepository;
+import ar.edu.utn.dds.k3003.repository.ConsensoRepositoryImpl;
+import ar.edu.utn.dds.k3003.repository.FuenteRepositoryImpl;
 import ar.edu.utn.dds.k3003.repository.InMemoryFuenteRepo;
 import ar.edu.utn.dds.k3003.model.Agregador;
 import ar.edu.utn.dds.k3003.model.Fuente;
@@ -22,6 +25,7 @@ import lombok.val;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.security.InvalidParameterException;
 import java.util.HashSet;
 import java.util.List;
@@ -63,14 +67,15 @@ public class Fachada implements FachadaAgregador {
     a.setFuentes(fuentes);
     return a;
   }
-
-  public Fachada() {
+/*
+  public Fachada(ConsensoRepository consensoRepository) {
+    this.consensoRepository = consensoRepository;
     this.fachadaFuenteProvider = null;
     this.fuenteRepository = new InMemoryFuenteRepo();
     this.agregadorRepository = new InMemoryagregadorRepo();
     Optional<Agregador> agregador1 = agregadorRepository.findById("1");
     agregador = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador()));
-  }
+  }*/
 
   @PostConstruct
   public void init() {

@@ -5,9 +5,11 @@ import ar.edu.utn.dds.k3003.dto.FuenteFachadaDTO;
 import ar.edu.utn.dds.k3003.facades.FachadaAgregador;
 import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
+import ar.edu.utn.dds.k3003.service.LimpiarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,11 +27,14 @@ public class FuenteController {
   private final FachadaAgregador fachadaAgregador;
   @Autowired
   private final FachadaFuente fachadaFuente;
+  private final LimpiarService limpiarService;
 
   public FuenteController(FachadaAgregador fachadaAgregador,
-                          FachadaFuente fachadaFuente) {
+                          FachadaFuente fachadaFuente,
+                          LimpiarService limpiarService) {
     this.fachadaAgregador = fachadaAgregador;
     this.fachadaFuente = fachadaFuente;
+    this.limpiarService = limpiarService;
   }
 
   @GetMapping
@@ -60,6 +65,12 @@ public class FuenteController {
   public ResponseEntity<?> agregarFuenteFachada(
       @RequestBody FuenteFachadaDTO dto) {
     fachadaAgregador.addFachadaFuentes(dto.id(), fachadaFuente);
+    return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/limpiar_entidades")
+  public ResponseEntity<?> limpiarEntidades() {
+    limpiarService.limpiarEntidades();
     return ResponseEntity.noContent().build();
   }
 
