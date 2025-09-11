@@ -27,7 +27,7 @@ public class LimpiarService {
   public void limpiarEntidades() {
     consensoRepository.deleteAll();
     fuenteRepositoryImpl.deleteAll();
-
+    coleccionRepositoryImpl.deleteAll();
   }
 
 }
