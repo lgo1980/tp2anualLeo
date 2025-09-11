@@ -21,6 +21,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.security.InvalidParameterException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -151,6 +152,16 @@ public class Fachada implements FachadaAgregador {
       throw new InvalidParameterException();
     Consenso nuevoConsenso = (tipoConsenso == ConsensosEnum.TODOS)
         ? new ConsensoTodos() : new ConsensoMultiples();
+
+    // Inicializar la map si es null
+    if (agregador.getConsensos() == null) {
+      agregador.setConsensos(new HashMap<>());
+    }
+
+    // Si ya existe un consenso para esta coleccionId, removerlo primero
+    // Esto asegura que Hibernate no intente insertar duplicado
+    agregador.getConsensos().remove(coleccionId);
+
     agregador.agregarConsenso(coleccionId, nuevoConsenso);
     agregadorRepository.save(agregador);
   }
