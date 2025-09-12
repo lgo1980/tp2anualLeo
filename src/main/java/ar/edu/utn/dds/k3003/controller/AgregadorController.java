@@ -7,6 +7,7 @@ import ar.edu.utn.dds.k3003.model.ConsensoTodos;
 import ar.edu.utn.dds.k3003.repository.AgregadorRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
@@ -27,8 +28,8 @@ public class AgregadorController {
     return ResponseEntity.ok(agregadores);
   }
 
-  @GetMapping("/consenso/{nombrecoleccion}")
-  public ResponseEntity<ConsensosEnum> verConsenso(String coleccionId) {
+  @GetMapping("/consenso/{coleccionId}")
+  public ResponseEntity<ConsensosEnum> verConsenso(@PathVariable String coleccionId) {
     List<Agregador> agregadores = (List<Agregador>) agregadorRepository.findAll();
     if (agregadores.isEmpty()) {
       return ResponseEntity.notFound().build();
