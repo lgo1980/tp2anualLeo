@@ -1,7 +1,9 @@
 package ar.edu.utn.dds.k3003.controller;
 
+import ar.edu.utn.dds.k3003.facades.dtos.ConsensosEnum;
 import ar.edu.utn.dds.k3003.model.Agregador;
 import ar.edu.utn.dds.k3003.model.Consenso;
+import ar.edu.utn.dds.k3003.model.ConsensoTodos;
 import ar.edu.utn.dds.k3003.repository.AgregadorRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,8 +28,20 @@ public class AgregadorController {
   }
 
   @GetMapping("/consenso/{nombrecoleccion}")
-  public ResponseEntity<Consenso> verConsenso(String coleccionId) {
+  public ResponseEntity<ConsensosEnum> verConsenso(String coleccionId) {
     List<Agregador> agregadores = (List<Agregador>) agregadorRepository.findAll();
-    return ResponseEntity.ok(agregadores.get(0).getConsensos().get(coleccionId));
+    if (agregadores.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+
+    Consenso consenso = agregadores.get(0).getConsensos().get(coleccionId);
+
+    if (consenso == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    ConsensosEnum resultado = (consenso instanceof ConsensoTodos) ? ConsensosEnum.TODOS : ConsensosEnum.AL_MENOS_2;
+
+    return ResponseEntity.ok(resultado);
   }
 }
