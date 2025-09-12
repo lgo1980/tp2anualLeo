@@ -27,18 +27,21 @@ public class LimpiarService {
 
   @Transactional
   public void limpiarEntidades() {
+    // 1️⃣ Limpiar los mapas de consensos de todos los agregadores
     List<Agregador> agregadores = (List<Agregador>) agregadorRepository.findAll();
     for (Agregador a : agregadores) {
-      if (a.getConsensos() != null) {
+      if (a.getConsensos() != null && !a.getConsensos().isEmpty()) {
         a.getConsensos().clear(); // limpia el Map en memoria
         agregadorRepository.save(a); // persiste los cambios
       }
     }
 
     // 2️⃣ Borrar todas las tablas de datos dependientes
-    agregadorRepository.deleteAll();
-    consensoRepository.deleteAll();
+    consensoRepository.deleteAll();  // aunque ya se limpiaron en memoria, esto asegura la limpieza completa
     fuenteRepositoryImpl.deleteAll();
+
+    // 3️⃣ Borrar los agregadores
+    agregadorRepository.deleteAll();
   }
 
 }
