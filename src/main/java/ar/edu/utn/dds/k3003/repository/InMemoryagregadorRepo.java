@@ -18,8 +18,38 @@ public class InMemoryagregadorRepo implements AgregadorRepository {
   }
 
   @Override
+  public <S extends Agregador> Iterable<S> saveAll(Iterable<S> entities) {
+    return null;
+  }
+
+  @Override
   public Optional<Agregador> findById(String id) {
     return this.agregadores.stream().filter(x -> x.getId().equals(id)).findFirst();
+  }
+
+  @Override
+  public boolean existsById(String s) {
+    return false;
+  }
+
+  @Override
+  public Iterable<Agregador> findAll() {
+    return null;
+  }
+
+  @Override
+  public Iterable<Agregador> findAllById(Iterable<String> strings) {
+    return null;
+  }
+
+  @Override
+  public long count() {
+    return 0;
+  }
+
+  @Override
+  public void deleteById(String s) {
+
   }
 
   @Override
@@ -31,6 +61,21 @@ public class InMemoryagregadorRepo implements AgregadorRepository {
   @Override
   public void delete(Agregador agregador) {
     agregadores.remove(agregador);
+  }
+
+  @Override
+  public void deleteAllById(Iterable<? extends String> strings) {
+
+  }
+
+  @Override
+  public void deleteAll(Iterable<? extends Agregador> entities) {
+
+  }
+
+  @Override
+  public void deleteAll() {
+
   }
 
 }
