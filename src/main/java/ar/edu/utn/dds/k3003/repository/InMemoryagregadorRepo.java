@@ -1,6 +1,7 @@
 package ar.edu.utn.dds.k3003.repository;
 
 import ar.edu.utn.dds.k3003.model.Agregador;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class InMemoryagregadorRepo implements AgregadorRepository {
   }
 
   @Override
-  public Optional<Agregador> findById(String id) {
+  public @NotNull Optional<Agregador> findById(@NotNull String id) {
     return this.agregadores.stream().filter(x -> x.getId().equals(id)).findFirst();
   }
 
@@ -53,7 +54,7 @@ public class InMemoryagregadorRepo implements AgregadorRepository {
   }
 
   @Override
-  public Agregador save(Agregador agregador) {
+  public @NotNull Agregador save(@NotNull Agregador agregador) {
     this.agregadores.add(agregador);
     return agregador;
   }
@@ -61,6 +62,11 @@ public class InMemoryagregadorRepo implements AgregadorRepository {
   @Override
   public void delete(Agregador agregador) {
     agregadores.remove(agregador);
+  }
+
+  @Override
+  public void borrarConsensosDeAgregadores() {
+
   }
 
   @Override
