@@ -29,6 +29,19 @@
         <retrofit.version>2.11.0</retrofit.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- BOM de Spring Cloud (compatible con Boot 3.2.3) -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2023.0.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <!-- Spring Boot Starters -->
         <dependency>
@@ -44,6 +57,7 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <!-- Retrofit (ya lo tenías) -->
         <dependency>
             <groupId>com.squareup.retrofit2</groupId>
             <artifactId>retrofit</artifactId>
@@ -72,7 +86,7 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-            <version>8.0.33</version> <!-- o la más reciente -->
+            <version>8.0.33</version>
         </dependency>
 
         <dependency>
@@ -87,7 +101,6 @@
             <optional>true</optional>
         </dependency>
 
-
         <dependency>
             <groupId>com.github.ezequieljsosa</groupId>
             <artifactId>dds-eval-tp2025</artifactId>
@@ -97,6 +110,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
         <!-- Spring Boot Test -->
