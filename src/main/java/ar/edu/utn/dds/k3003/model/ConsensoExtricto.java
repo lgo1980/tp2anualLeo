@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
-@Table(name = "consensos_todos")
-public class ConsensoTodos extends Consenso {
+@Table(name = "consensos_extricto")
+public class ConsensoExtricto extends Consenso {
 
   @Override
   public boolean aplicar(HechoDTO hecho, Map<FuenteDTO, List<HechoDTO>> hechosPorFuente) {

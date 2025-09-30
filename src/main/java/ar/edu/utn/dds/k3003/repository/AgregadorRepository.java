@@ -21,5 +21,3 @@ public interface AgregadorRepository extends CrudRepository<Agregador, String> {
   void borrarConsensosDeAgregadores();
 
 }
-
-//public interface AgregadorRepository extends JpaRepository<Agregador, String> {

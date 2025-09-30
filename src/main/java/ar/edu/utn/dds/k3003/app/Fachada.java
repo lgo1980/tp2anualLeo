@@ -1,5 +1,6 @@
 package ar.edu.utn.dds.k3003.app;
 
+import ar.edu.utn.dds.k3003.clients.FachadaFuenteFactory;
 import ar.edu.utn.dds.k3003.facades.FachadaAgregador;
 import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.ConsensosEnum;
@@ -8,36 +9,36 @@ import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import ar.edu.utn.dds.k3003.model.Consenso;
 import ar.edu.utn.dds.k3003.model.ConsensoMultiples;
 import ar.edu.utn.dds.k3003.model.ConsensoTodos;
-import ar.edu.utn.dds.k3003.model.FuenteFachada;
 import ar.edu.utn.dds.k3003.repository.AgregadorRepository;
 import ar.edu.utn.dds.k3003.model.Agregador;
 import ar.edu.utn.dds.k3003.model.Fuente;
 import ar.edu.utn.dds.k3003.repository.FuenteRepository;
-import ar.edu.utn.dds.k3003.service.HechoService;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.val;
+import org.junit.platform.commons.logging.Logger;
+import org.junit.platform.commons.logging.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class Fachada implements FachadaAgregador {
 
+  private static final Logger log = LoggerFactory.getLogger(Fachada.class);
   private final FuenteRepository fuenteRepository;
   @Getter
   private Agregador agregador;
   private final AgregadorRepository agregadorRepository;
-  private final ObjectProvider<FachadaFuente> fachadaFuenteProvider;
+  private final Map<String, FachadaFuente> fuentes = new HashMap<>();
 
   @Autowired
   public Fachada(FuenteRepository fuenteRepository,
@@ -45,36 +46,24 @@ public class Fachada implements FachadaAgregador {
                  ObjectProvider<FachadaFuente> fachadaFuenteProvider) {
     this.fuenteRepository = fuenteRepository;
     this.agregadorRepository = agregadorRepository;
-    this.fachadaFuenteProvider = fachadaFuenteProvider;
-  }
-
-  public Agregador obtenerAgregadorConFuentes(String id) {
-    Optional<Agregador> agregador1 = agregadorRepository.findById(id);
-    Agregador a = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador(id)));
-    List<FuenteFachada> fuentes = a.getFuenteIds().stream()
-        .map(fid -> {
-          FachadaFuente instancia = fachadaFuenteProvider.getObject(); // 👈 nueva instancia por id
-//          instancia.setId(fid);
-          return new FuenteFachada(fid, instancia);
-        })
-        .toList();
-
-    a.setFuentes(fuentes);
-    return a;
-  }
-/*
-  public Fachada(ConsensoRepository consensoRepository) {
-    this.consensoRepository = consensoRepository;
-    this.fachadaFuenteProvider = null;
-    this.fuenteRepository = new InMemoryFuenteRepo();
-    this.agregadorRepository = new InMemoryagregadorRepo();
     Optional<Agregador> agregador1 = agregadorRepository.findById("1");
-    agregador = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador()));
-  }*/
+    agregador = agregador1.orElseGet(() -> agregadorRepository.save(new Agregador("1")));
+  }
 
   @PostConstruct
   public void init() {
-    this.agregador = obtenerAgregadorConFuentes("1");
+    List<Fuente> todas = fuenteRepository.findAll();
+    for (Fuente f : todas) {
+      try {
+        if (f.getEndpoint() == null) {
+          continue;
+        }
+        FachadaFuente cliente = FachadaFuenteFactory.crearCliente(f.getEndpoint());
+        addFachadaFuentes(f.getId(), cliente);
+      } catch (Exception ex) {
+        System.out.println("Hubo una exepcion");
+      }
+    }
   }
 
   @Override
@@ -104,45 +93,38 @@ public class Fachada implements FachadaAgregador {
 
   @Override
   public List<HechoDTO> hechos(String coleccionId) throws NoSuchElementException {
-    List<FuenteDTO> fuentes = fuentes();
-    Set<String> titulosVistos = new HashSet<>();
-    HechoService hechoService = new HechoService();
-    Set<HechoDTO> hechosUnicos = new HashSet<>(fuentes.stream()
-        .flatMap(fuente -> {
-          try {
-            return hechoService.obtenerHechos(fuente, coleccionId).stream();
-          } catch (Exception e) {
-            System.err.println("Error consultando fuente " + fuente.endpoint() + ": " + e.getMessage());
-            return Stream.empty();
-          }
-        })
-        .collect(Collectors.toMap(
-            hecho -> hecho.titulo() == null ? "" : hecho.titulo().toLowerCase(),
-            hecho -> hecho,
-            (hechoExistente, nuevoHecho) -> hechoExistente
-        ))
-        .values());
-    return agregador.validarHechos(hechosUnicos, coleccionId, fuentes);
-  }
 
-  /*
-    Set<HechoDTO> hechosUnicos = fuentes.stream()
-        .flatMap(fuente -> hechoService.obtenerHechos(fuente, coleccionId))
-        .filter(hecho -> titulosVistos.add(hecho..toLowerCase())) // solo se agregan títulos nuevos
-        .collect(Collectors.toSet());
-    return validarHechos(hechosUnicos, coleccionId);*/
-  //return agregador.consultarHechosPor(coleccionId);
+    Map<FuenteDTO, List<HechoDTO>> hechosPorFuente = new HashMap<>();
+
+    for (FuenteDTO fuente : fuentes()) {
+      try {
+        List<HechoDTO> hechos = this.fuentes.get(fuente.id()).buscarHechosXColeccion(coleccionId);
+        Map<String, HechoDTO> sinRepetidos = hechos.stream()
+            .collect(Collectors.toMap(
+                h -> h.titulo().trim().toLowerCase(),
+                h -> h,
+                (h1, h2) -> h1
+            ));
+        hechosPorFuente.put(fuente, new ArrayList<>(sinRepetidos.values()));
+      } catch (Exception e) {
+        System.out.println("No se pudo obtener los hechos porque: " + e.getMessage());
+      }
+    }
+
+    Map<String, HechoDTO> hechosUnicos = new HashMap<>();
+    for (List<HechoDTO> lista : hechosPorFuente.values()) {
+      for (HechoDTO h : lista) {
+        String key = h.titulo().trim().toLowerCase();
+        hechosUnicos.putIfAbsent(key, h);
+      }
+    }
+    List<HechoDTO> todosLosHechos = new ArrayList<>(hechosUnicos.values());
+    return agregador.validarHechos(todosLosHechos, coleccionId, hechosPorFuente);
+  }
 
   @Override
   public void addFachadaFuentes(String fuenteId, FachadaFuente fuente) {
-    Set<String> fuenteIds = agregador.getFuenteIds();
-    if (!(fuenteIds instanceof HashSet)) {
-      fuenteIds = new HashSet<>(fuenteIds);
-      agregador.setFuenteIds(fuenteIds);
-    }
-    agregador.agregarFuenteId(fuenteId);
-    agregador.agregarFuente(new FuenteFachada(fuenteId, fuente));
-    agregadorRepository.save(agregador);
+    this.fuentes.put(fuenteId, fuente);
   }
 
   @Override
@@ -153,15 +135,11 @@ public class Fachada implements FachadaAgregador {
     Consenso nuevoConsenso = (tipoConsenso == ConsensosEnum.TODOS)
         ? new ConsensoTodos() : new ConsensoMultiples();
 
-    // Inicializar la map si es null
     if (agregador.getConsensos() == null) {
       agregador.setConsensos(new HashMap<>());
     }
 
-    // Si ya existe un consenso para esta coleccionId, removerlo primero
-    // Esto asegura que Hibernate no intente insertar duplicado
     agregador.getConsensos().remove(coleccionId);
-
     agregador.agregarConsenso(coleccionId, nuevoConsenso);
     agregadorRepository.save(agregador);
   }

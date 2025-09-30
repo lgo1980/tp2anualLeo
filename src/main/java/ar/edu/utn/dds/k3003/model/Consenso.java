@@ -8,6 +8,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import lombok.Data;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Data
@@ -22,5 +23,6 @@ public abstract class Consenso {
     this.id = UUID.randomUUID().toString();
   }
 
-  public abstract Boolean aplicar(HechoDTO hecho, List<FuenteDTO> fuentes);
+  public abstract boolean aplicar(HechoDTO hecho, Map<FuenteDTO, List<HechoDTO>> hechosPorFuente);
+
 }

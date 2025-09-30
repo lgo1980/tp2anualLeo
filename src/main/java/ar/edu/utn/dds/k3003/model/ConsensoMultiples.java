@@ -2,35 +2,35 @@ package ar.edu.utn.dds.k3003.model;
 
 import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
-import ar.edu.utn.dds.k3003.service.HechoService;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "consensos_multiples")
 public class ConsensoMultiples extends Consenso {
 
+
   @Override
-  public Boolean aplicar(HechoDTO hecho, List<FuenteDTO> fuentes) {
-    if (fuentes.size() == 1) {
-      return true;
+  public boolean aplicar(HechoDTO hecho, Map<FuenteDTO, List<HechoDTO>> hechosPorFuente) {
+
+    if (hechosPorFuente.size() == 1) {
+      return true; // caso especial: si hay una sola fuente, todos pasan
     }
 
-    HechoService hechoService = new HechoService();
-    int contador = 0;
-    for (FuenteDTO fuente : fuentes) {
-      System.out.println("El nombre de la coleccion: " + hecho.nombreColeccion());
-      List<HechoDTO> hechos = hechoService.obtenerHechos(fuente, hecho.nombreColeccion());
+    String titulo = hecho.titulo().trim().toLowerCase();
 
-      boolean estaPresente = hechos.stream()
-          .anyMatch(h -> h.titulo().equalsIgnoreCase(hecho.titulo()));
+    System.out.println("EL titulo es: " + titulo);
 
-      if (estaPresente) {
-        contador++;
-      }
-    }
-    return contador > 1;
+    // contar en cuántas fuentes aparece
+    long count = hechosPorFuente.values().stream()
+        .filter(lista -> lista.stream()
+            .anyMatch(h -> h.titulo().trim().equalsIgnoreCase(titulo)))
+        .count();
+
+    System.out.println("EL count es: " + count);
+
+    return count >= 2;
   }
-
 }
