@@ -1,17 +1,7 @@
 package ar.edu.utn.dds.k3003.app;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import ar.edu.utn.dds.k3003.facades.dtos.ColeccionDTO;
-import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import ar.edu.utn.dds.k3003.model.Coleccion;
-import java.util.List;
-import java.util.NoSuchElementException;
-import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -26,14 +16,14 @@ public class FachadaTest {
   public static final String UN_PDI = "1";
   public static final String DOS_PDI = "2";
   Coleccion coleccion;
-  FachadaFuenteImple fachada;
 
 
   @BeforeEach
   void setUp() {
     coleccion = new Coleccion(UNA_COLECCION, DESCRIPCION);
-    fachada = new FachadaFuenteImple();
   }
+
+
 /*
   @Test
   @DisplayName("Agrega una coleccion y la busca")

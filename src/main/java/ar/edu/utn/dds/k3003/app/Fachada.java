@@ -1,12 +1,12 @@
 package ar.edu.utn.dds.k3003.app;
 
 import ar.edu.utn.dds.k3003.clients.FachadaFuenteFactory;
-import ar.edu.utn.dds.k3003.facades.FachadaAgregador;
+import ar.edu.utn.dds.k3003.dto.ConsensosEnum;
 import ar.edu.utn.dds.k3003.facades.FachadaFuente;
-import ar.edu.utn.dds.k3003.facades.dtos.ConsensosEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import ar.edu.utn.dds.k3003.model.Consenso;
+import ar.edu.utn.dds.k3003.model.ConsensoExtricto;
 import ar.edu.utn.dds.k3003.model.ConsensoMultiples;
 import ar.edu.utn.dds.k3003.model.ConsensoTodos;
 import ar.edu.utn.dds.k3003.repository.AgregadorRepository;
@@ -132,8 +132,16 @@ public class Fachada implements FachadaAgregador {
       throws InvalidParameterException {
     if (tipoConsenso == null || coleccionId == null)
       throw new InvalidParameterException();
-    Consenso nuevoConsenso = (tipoConsenso == ConsensosEnum.TODOS)
-        ? new ConsensoTodos() : new ConsensoMultiples();
+
+
+    Consenso nuevoConsenso;
+
+    switch (tipoConsenso) {
+      case TODOS -> nuevoConsenso = new ConsensoTodos();
+      case AL_MENOS_2 -> nuevoConsenso = new ConsensoMultiples();
+      case EXTRICTO -> nuevoConsenso = new ConsensoExtricto();
+      default -> throw new InvalidParameterException("Tipo de consenso no soportado: " + tipoConsenso);
+    }
 
     if (agregador.getConsensos() == null) {
       agregador.setConsensos(new HashMap<>());
