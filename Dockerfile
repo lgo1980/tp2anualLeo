@@ -1,5 +1,5 @@
 # Etapa 1: Construcción de la aplicación
-FROM openjdk:19-jdk AS build
+FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
 
 # Copiamos solo lo necesario para que Maven cachee dependencias
@@ -15,7 +15,7 @@ COPY src src
 RUN ./mvnw clean package -DskipTests
 
 # Etapa 2: Imagen final con el JAR listo para correr
-FROM openjdk:19-jdk
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
 VOLUME /tmp
 
