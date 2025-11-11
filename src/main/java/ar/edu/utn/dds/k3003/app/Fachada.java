@@ -9,7 +9,6 @@ import ar.edu.utn.dds.k3003.model.Consenso;
 import ar.edu.utn.dds.k3003.model.ConsensoExtricto;
 import ar.edu.utn.dds.k3003.model.ConsensoMultiples;
 import ar.edu.utn.dds.k3003.model.ConsensoTodos;
-import ar.edu.utn.dds.k3003.model.HechoMongo;
 import ar.edu.utn.dds.k3003.repository.AgregadorRepository;
 import ar.edu.utn.dds.k3003.model.Agregador;
 import ar.edu.utn.dds.k3003.model.Fuente;
@@ -21,7 +20,6 @@ import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -161,7 +159,8 @@ public class Fachada implements FachadaAgregador {
 
     for (FuenteDTO fuente : fuentes()) {
       try {
-        List<HechoDTO> hechos = this.fuentes.get(fuente.id()).buscarHechosFiltrados(filtros);
+//        List<HechoDTO> hechos = this.fuentes.get(fuente.id()).buscarHechosFiltrados(filtros);
+        List<HechoDTO> hechos = this.devolverAlgo();
         Map<String, HechoDTO> sinRepetidos = hechos.stream()
             .collect(Collectors.toMap(
                 h -> h.titulo().trim().toLowerCase(),
@@ -199,6 +198,10 @@ public class Fachada implements FachadaAgregador {
     int fin = Math.min(primer_indice + 3, hechos.size());
     return hechos.subList(primer_indice, Math.max(fin, 0));
 
+  }
+
+  private List<HechoDTO> devolverAlgo() {
+    return List.of();
   }
 
 
