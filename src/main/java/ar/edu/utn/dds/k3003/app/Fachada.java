@@ -9,6 +9,7 @@ import ar.edu.utn.dds.k3003.model.Consenso;
 import ar.edu.utn.dds.k3003.model.ConsensoExtricto;
 import ar.edu.utn.dds.k3003.model.ConsensoMultiples;
 import ar.edu.utn.dds.k3003.model.ConsensoTodos;
+import ar.edu.utn.dds.k3003.model.HechoMongo;
 import ar.edu.utn.dds.k3003.repository.AgregadorRepository;
 import ar.edu.utn.dds.k3003.model.Agregador;
 import ar.edu.utn.dds.k3003.model.Fuente;
@@ -20,6 +21,7 @@ import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -151,5 +153,53 @@ public class Fachada implements FachadaAgregador {
     agregador.agregarConsenso(coleccionId, nuevoConsenso);
     agregadorRepository.save(agregador);
   }
+
+  @Override
+  public List<HechoDTO> filtrarHechos(Map<String, String> filtros) throws NoSuchElementException {
+
+    Map<FuenteDTO, List<HechoDTO>> hechosPorFuente = new HashMap<>();
+
+    for (FuenteDTO fuente : fuentes()) {
+      try {
+        List<HechoDTO> hechos = this.fuentes.get(fuente.id()).buscarHechosFiltrados(filtros);
+        Map<String, HechoDTO> sinRepetidos = hechos.stream()
+            .collect(Collectors.toMap(
+                h -> h.titulo().trim().toLowerCase(),
+                h -> h,
+                (h1, h2) -> h1
+            ));
+        hechosPorFuente.put(fuente, new ArrayList<>(sinRepetidos.values()));
+      } catch (Exception e) {
+        System.out.println("No se pudo obtener los hechos porque: " + e.getMessage());
+      }
+
+    }
+
+    Map<String, HechoDTO> hechosUnicos = new HashMap<>();
+    for (List<HechoDTO> lista : hechosPorFuente.values()) {
+      for (HechoDTO h : lista) {
+        String key = h.titulo().trim().toLowerCase();
+        hechosUnicos.putIfAbsent(key, h);
+      }
+    }
+    List<HechoDTO> hechos = new ArrayList<>(hechosUnicos.values());
+
+    int pagina = 1;
+    String key;
+
+    for (Map.Entry<String, String> filtro : filtros.entrySet()) {
+      key = filtro.getKey().toLowerCase();
+      String value = filtro.getValue();
+      if (key.equals("page")) {
+        pagina = Integer.parseInt(value);
+      }
+    }
+
+    int primer_indice = (pagina - 1) * 3;
+    int fin = Math.min(primer_indice + 3, hechos.size());
+    return hechos.subList(primer_indice, Math.max(fin, 0));
+
+  }
+
 
 }

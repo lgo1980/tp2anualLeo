@@ -6,6 +6,7 @@ import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 public interface FachadaAgregador {
@@ -22,5 +23,7 @@ public interface FachadaAgregador {
 
   void setConsensoStrategy(ConsensosEnum tipoConsenso, String coleccionId)
       throws InvalidParameterException;
+
+  List<HechoDTO> filtrarHechos(Map<String,String> filtros) throws NoSuchElementException;
 
 }
