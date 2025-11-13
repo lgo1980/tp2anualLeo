@@ -1,6 +1,6 @@
 package ar.edu.utn.dds.k3003.clients;
 
-import ar.edu.utn.dds.k3003.facades.FachadaFuente;
+import ar.edu.utn.dds.k3003.app.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.FachadaProcesadorPdI;
 import ar.edu.utn.dds.k3003.facades.dtos.ColeccionDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Service
@@ -121,6 +122,11 @@ public class FachadaFuenteProxy implements FachadaFuente {
     } catch (IOException e) {
       throw new RuntimeException("Error al obtener colecciones", e);
     }
+  }
+
+  @Override
+  public List<HechoDTO> buscarHechosFiltrados(Map<String, String> filtros) {
+    return List.of();
   }
 
 }

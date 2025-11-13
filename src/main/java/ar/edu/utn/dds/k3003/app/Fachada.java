@@ -2,7 +2,6 @@ package ar.edu.utn.dds.k3003.app;
 
 import ar.edu.utn.dds.k3003.clients.FachadaFuenteFactory;
 import ar.edu.utn.dds.k3003.dto.ConsensosEnum;
-import ar.edu.utn.dds.k3003.facades.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import ar.edu.utn.dds.k3003.model.Consenso;
@@ -160,7 +159,7 @@ public class Fachada implements FachadaAgregador {
     for (FuenteDTO fuente : fuentes()) {
       try {
 //        List<HechoDTO> hechos = this.fuentes.get(fuente.id()).buscarHechosFiltrados(filtros);
-        List<HechoDTO> hechos = this.devolverAlgo();
+        List<HechoDTO> hechos = this.fuentes.get(fuente.id()).buscarHechosFiltrados(filtros);
         Map<String, HechoDTO> sinRepetidos = hechos.stream()
             .collect(Collectors.toMap(
                 h -> h.titulo().trim().toLowerCase(),
@@ -197,6 +196,7 @@ public class Fachada implements FachadaAgregador {
     int primer_indice = (pagina - 1) * 3;
     int fin = Math.min(primer_indice + 3, hechos.size());
     return hechos.subList(primer_indice, Math.max(fin, 0));
+
 
   }
 

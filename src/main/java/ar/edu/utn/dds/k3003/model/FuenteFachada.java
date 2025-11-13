@@ -1,6 +1,6 @@
 package ar.edu.utn.dds.k3003.model;
 
-import ar.edu.utn.dds.k3003.facades.FachadaFuente;
+import ar.edu.utn.dds.k3003.app.FachadaFuente;
 import lombok.Data;
 
 @Data

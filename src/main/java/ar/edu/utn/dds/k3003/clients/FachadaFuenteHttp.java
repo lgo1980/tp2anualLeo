@@ -1,14 +1,18 @@
 package ar.edu.utn.dds.k3003.clients;
 
-import ar.edu.utn.dds.k3003.facades.FachadaFuente;
+import ar.edu.utn.dds.k3003.app.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.FachadaProcesadorPdI;
 import ar.edu.utn.dds.k3003.facades.dtos.ColeccionDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.PdIDTO;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriUtils;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 public class FachadaFuenteHttp implements FachadaFuente {
 
@@ -102,4 +106,30 @@ public class FachadaFuenteHttp implements FachadaFuente {
     assert colecciones != null;
     return Arrays.asList(colecciones);
   }
+
+  @Override
+  public List<HechoDTO> buscarHechosFiltrados(Map<String, String> filtros) {
+    try {
+      // Construir la query string solo si hay filtros
+      String queryString = "";
+      if (filtros != null && !filtros.isEmpty()) {
+        queryString = filtros.entrySet().stream()
+            .map(entry -> entry.getKey() + "=" + UriUtils.encodeQueryParam(entry.getValue(), StandardCharsets.UTF_8))
+            .collect(Collectors.joining("&", "?", ""));
+      }
+
+      String url = baseUrl + "/api/hecho/busqueda" + queryString;
+
+      HechoDTO[] hechos = restTemplate.getForObject(url, HechoDTO[].class);
+
+      if (hechos == null || hechos.length == 0) {
+        throw new NoSuchElementException("No se encontraron hechos para los filtros ingresados");
+      }
+
+      return Arrays.asList(hechos);
+    } catch (Exception e) {
+      throw new NoSuchElementException("Error al buscar hechos: " + e.getMessage());
+    }
+  }
+
 }
