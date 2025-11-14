@@ -1,18 +1,18 @@
 # Etapa 1: Construcción de la aplicación
-FROM eclipse-temurin:17-jdk AS build
+FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copiamos solo lo necesario para que Maven cachee dependencias
+# Copiamos el pom.xml primero para cachear dependencias
 COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
 
-RUN chmod +x ./mvnw
-RUN ./mvnw dependency:go-offline
+# Descargamos dependencias (esto se cachea si pom.xml no cambia)
+RUN mvn dependency:go-offline -B
 
-# Copiamos el código fuente y compilamos
+# Copiamos el código fuente
 COPY src src
-RUN ./mvnw clean package -DskipTests
+
+# Compilamos la aplicación
+RUN mvn clean package -DskipTests -B
 
 # Etapa 2: Imagen final con el JAR listo para correr
 FROM eclipse-temurin:17-jdk
