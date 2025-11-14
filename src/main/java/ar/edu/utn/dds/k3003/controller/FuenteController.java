@@ -1,6 +1,5 @@
 package ar.edu.utn.dds.k3003.controller;
 
-
 import ar.edu.utn.dds.k3003.app.FachadaAgregador;
 import ar.edu.utn.dds.k3003.dto.CambioConsensoDTO;
 import ar.edu.utn.dds.k3003.dto.FuenteFachadaDTO;
@@ -8,6 +7,7 @@ import ar.edu.utn.dds.k3003.app.FachadaFuente;
 import ar.edu.utn.dds.k3003.facades.dtos.FuenteDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.HechoDTO;
 import ar.edu.utn.dds.k3003.service.LimpiarService;
+import ar.edu.utn.dds.k3003.service.MetricasService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,7 +24,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-
 @RestController
 @RequestMapping("/fuentes")
 public class FuenteController {
@@ -34,13 +33,16 @@ public class FuenteController {
   @Autowired
   private final FachadaFuente fachadaFuente;
   private final LimpiarService limpiarService;
+  private final MetricasService metricasService;
 
   public FuenteController(FachadaAgregador fachadaAgregador,
-                          FachadaFuente fachadaFuente,
-                          LimpiarService limpiarService) {
+      FachadaFuente fachadaFuente,
+      LimpiarService limpiarService,
+      MetricasService metricasService) {
     this.fachadaAgregador = fachadaAgregador;
     this.fachadaFuente = fachadaFuente;
     this.limpiarService = limpiarService;
+    this.metricasService = metricasService;
   }
 
   @GetMapping
@@ -82,8 +84,15 @@ public class FuenteController {
 
   @GetMapping("/busqueda")
   public ResponseEntity<?> buscar(@RequestParam Map<String, String> filtros) {
-    List<HechoDTO> hechos = fachadaAgregador.filtrarHechos(filtros);
-    return ResponseEntity.ok(hechos); // 200 con la lista*/
-  }
+    List<HechoDTO> hechos;
+    try {
+      hechos = metricasService.getBusquedasTimer().recordCallable(() -> fachadaAgregador.filtrarHechos(filtros));
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body("Error al buscar hechos: " + e.getMessage());
+    }
 
-} 
+    metricasService.registrarBusqueda();
+
+    return ResponseEntity.ok(hechos);
+  }
+}
